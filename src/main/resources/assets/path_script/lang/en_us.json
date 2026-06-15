@@ -5,9 +5,11 @@
   "item.path_script.path_editor.current_pos": "Current: %s",
   "item.path_script.path_editor.node_count": "Nodes: %s",
   "tip.path_script.node": "Node[%s]",
+  "tip.path_script.current": "§e<< CURRENT >>",
   "command.path_script.not_holding_editor": "You must hold a Path Editor in your main hand.",
   "command.path_script.no_node_selected": "No node selected.",
   "command.path_script.cannot_delete_start": "Cannot delete the start node.",
   "command.path_script.node_deleted": "Node %s deleted.",
-  "command.path_script.action_added": "Action \"%s\" added to node %s."
+  "command.path_script.action_added": "Action \"%s\" added to node %s.",
+  "action.path_script.message": "§a[A] §fMessage"
 }

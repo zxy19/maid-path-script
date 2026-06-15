@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
@@ -23,5 +24,10 @@ public record MessageAction(String message) implements IAction {
     @Override
     public Identifier getId() {
         return ID;
+    }
+
+    @Override
+    public Component getDisplayComponent() {
+        return Component.translatable("action.path_script.message", message);
     }
 }

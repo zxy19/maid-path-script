@@ -24,10 +24,10 @@ public class PathScript {
     }
 
     public PathScript(IEventBus modEventBus, ModContainer modContainer) {
-        MemoryModuleRegistry.REGISTER.register(modEventBus);
-        DataComponentRegistry.REGISTER.register(modEventBus);
-        ItemRegistry.REGISTER.register(modEventBus);
-        CreativeTabRegistry.REGISTER.register(modEventBus);
+        MemoryModuleRegistry.register(modEventBus);
+        DataComponentRegistry.register(modEventBus);
+        ItemRegistry.register(modEventBus);
+        CreativeTabRegistry.register(modEventBus);
         ActionManager.init();
         NeoForge.EVENT_BUS.register(PathEditorCommand.class);
     }

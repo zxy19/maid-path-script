@@ -3,6 +3,7 @@ package studio.fantasyit.path_script.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -23,7 +24,8 @@ public class LevelTickEvent {
         if (mainStack.getItem() != ItemRegistry.PATH_EDITOR.get()) return;
         PathSet data = mainStack.get(DataComponentRegistry.PATH_SET);
         if (data == null) return;
-        if (mc.player.tickCount % 5 != 0) return;
+        long mills = Util.getMillis();
+        if ((mills / 50) % 2 != 0) return;
         for (PathNode node : data.getNodes()) {
             BlockPos cur = node.pos();
             for (BlockPos next : node.next()) {
@@ -31,7 +33,7 @@ public class LevelTickEvent {
                 Vec3 c2 = next.getCenter();
                 Vec3 delta = c2.subtract(c1);
                 double distance = delta.length();
-                double start = (double) ((mc.player.tickCount / 10) % 5) * 0.1;
+                double start = (double) ((mills / 100) % 10) * 0.05;
                 for (double a = start; a < distance; a += 0.5) {
                     Vec3 p1 = c1.add(delta.normalize().scale(a));
                     mc.level.addParticle(new DustParticleOptions(0xaa4400, 0.6f), p1.x, p1.y, p1.z, 0.0D, 0.0D, 0.0D);

@@ -1,0 +1,16 @@
+{
+  "itemGroup.path_script": "Path Script",
+  "item.path_script.path_editor": "路径编辑器",
+  "item.path_script.path_editor.selected": "已选择: %s",
+  "item.path_script.path_editor.current_pos": "当前位置: %s",
+  "item.path_script.path_editor.node_count": "节点数: %s",
+  "tip.path_script.node": "节点[%s]",
+  "tip.path_script.current": "§e<< 当前选中 >>",
+  "command.path_script.not_holding_editor": "你必须主手持有路径编辑器。",
+  "command.path_script.no_node_selected": "未选中任何节点。",
+  "command.path_script.cannot_delete_start": "不能删除起始节点。",
+  "command.path_script.node_deleted": "节点 %s 已删除。",
+  "command.path_script.action_added": "动作 \"%s\" 已添加到节点 %s。",
+  "action.path_script.message": "§a[A] §f消息"
+}
+}
