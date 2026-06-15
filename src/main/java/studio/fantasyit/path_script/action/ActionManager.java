@@ -1,0 +1,34 @@
+package studio.fantasyit.path_script.action;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ActionManager {
+    static Map<Identifier, MapCodec<IAction>> CODECS = new HashMap<>();
+    static Map<Identifier, StreamCodec<RegistryFriendlyByteBuf, IAction>> STREAMCODECS = new HashMap<>();
+
+    public static Codec<IAction> CODEC = Identifier.CODEC.dispatch("id", IAction::getId, id -> CODECS.get(id));
+    public static StreamCodec<RegistryFriendlyByteBuf, IAction> STREAM_CODEC = StreamCodec.of((t, a) -> {
+        t.writeIdentifier(a.getId());
+        STREAMCODECS.get(a.getId()).encode(t, a);
+    }, t -> {
+        Identifier id = t.readIdentifier();
+        return STREAMCODECS.get(id).decode(t);
+    });
+
+    @SuppressWarnings("unchecked")
+    public static void register(Identifier id, MapCodec<? extends IAction> codec, StreamCodec<RegistryFriendlyByteBuf, ? extends IAction> streamCodec) {
+        CODECS.put(id, (MapCodec<IAction>) codec);
+        STREAMCODECS.put(id, (StreamCodec<RegistryFriendlyByteBuf, IAction>) streamCodec);
+    }
+
+    public static void init() {
+        register(MessageAction.ID, MessageAction.CODEC, MessageAction.STREAM_CODEC);
+    }
+}
