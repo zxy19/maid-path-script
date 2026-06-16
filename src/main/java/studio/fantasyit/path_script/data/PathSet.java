@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import studio.fantasyit.path_script.action.IAction;
 
 import java.util.*;
 
@@ -14,6 +14,9 @@ public class PathSet {
     final Map<BlockPos, PathNode> map;
     final BlockPos startPos;
     final List<PathNode> nodes;
+    final Map<BlockPos, Integer> depthMap;
+    final Map<BlockPos, BlockPos> parentMap;
+
 
     public static final Codec<PathSet> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -35,6 +38,48 @@ public class PathSet {
         for (PathNode node : nodes) {
             map.put(node.pos(), node);
         }
+        depthMap = new HashMap<>();
+        parentMap = new HashMap<>();
+        Deque<BlockPos> queue = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        queue.add(startPos);
+        visited.add(startPos);
+        depthMap.put(startPos, 0);
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            depth++;
+            for (int i = 0; i < size; i++) {
+                BlockPos current = queue.poll();
+                for (BlockPos nextPos : getNext(current)) {
+                    if (!visited.contains(nextPos)) {
+                        visited.add(nextPos);
+                        depthMap.put(nextPos, depth);
+                        parentMap.put(nextPos, current);
+                        queue.add(nextPos);
+                    }
+                }
+            }
+        }
+    }
+
+    public int getDepth(BlockPos pos) {
+        return depthMap.getOrDefault(pos, -1);
+    }
+
+    public BlockPos getParent(BlockPos pos) {
+        return parentMap.get(pos);
+    }
+
+    public boolean isAncestor(BlockPos ancestor, BlockPos descendant) {
+        BlockPos current = descendant;
+        while (current != null) {
+            if (current.equals(ancestor)) {
+                return true;
+            }
+            current = parentMap.get(current);
+        }
+        return false;
     }
 
     public BlockPos getStartPos() {
@@ -79,7 +124,7 @@ public class PathSet {
         return nearest;
     }
 
-    public List<Identifier> getAction(BlockPos pos) {
+    public List<IAction> getAction(BlockPos pos) {
         PathNode node = map.get(pos);
         return node == null ? Collections.emptyList() : node.actions();
     }
@@ -110,15 +155,15 @@ public class PathSet {
         return new PathSet(startPos, newNodes);
     }
 
-    public PathSet addAction(BlockPos pos, Identifier actionId) {
+    public PathSet addAction(BlockPos pos, IAction action) {
         if (!map.containsKey(pos)) {
             return this;
         }
         List<PathNode> newNodes = new ArrayList<>();
         for (PathNode node : nodes) {
             if (node.pos().equals(pos)) {
-                List<Identifier> newActions = new ArrayList<>(node.actions());
-                newActions.add(actionId);
+                List<IAction> newActions = new ArrayList<>(node.actions());
+                newActions.add(action);
                 newNodes.add(new PathNode(node.pos(), node.next(), newActions));
             } else {
                 newNodes.add(node);

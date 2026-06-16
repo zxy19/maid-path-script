@@ -5,14 +5,13 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
-import studio.fantasyit.path_script.action.ActionManager;
+import studio.fantasyit.path_script.action.IAction;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
@@ -68,8 +67,8 @@ public class LevelRender {
                     floating.put(node.pos(), floating.getOrDefault(node.pos(), 0) + 1);
                 }
 
-                for (Identifier actionId : node.actions()) {
-                    Component actionLabel = ActionManager.getDisplayComponent(actionId);
+                for (IAction action : node.actions()) {
+                    Component actionLabel = action.getDisplayComponent();
                     Vec3 from = node.pos().getCenter().add(0, 0.7f, 0);
                     BoxRenderUtil.drawText(poseStack, mc, camera, submitNodeCollector, from, actionLabel, 0xffaaaaaa, floating.getOrDefault(node.pos(), 0) * 0.3f);
                     floating.put(node.pos(), floating.getOrDefault(node.pos(), 0) + 1);

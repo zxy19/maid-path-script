@@ -1,13 +1,16 @@
 package studio.fantasyit.path_script.action;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import studio.fantasyit.path_script.PathScript;
 
 public record MessageAction(String message) implements IAction {
@@ -29,5 +32,10 @@ public record MessageAction(String message) implements IAction {
     @Override
     public Component getDisplayComponent() {
         return Component.translatable("action.path_script.message", message);
+    }
+
+    @Override
+    public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
+        player.sendSystemMessage(Component.literal(message));
     }
 }

@@ -8,9 +8,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
+import studio.fantasyit.path_script.behavior.MaidFollowPathMoveBehavior;
 
 import java.util.List;
-import java.util.Set;
 
 public class MaidPathScriptTask implements IMaidTask {
     @Override
@@ -30,6 +30,6 @@ public class MaidPathScriptTask implements IMaidTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        return List.of();
+        return List.of(Pair.of(2, new MaidFollowPathMoveBehavior()));
     }
 }

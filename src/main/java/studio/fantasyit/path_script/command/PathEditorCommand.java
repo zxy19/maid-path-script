@@ -8,12 +8,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import studio.fantasyit.path_script.action.MessageAction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.item.PathEditorItem;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
@@ -94,9 +93,8 @@ public class PathEditorCommand {
         }
 
         String text = StringArgumentType.getString(ctx, "text");
-        Identifier actionId = PathScript.id("message");
 
-        PathSet newPathSet = pathSet.addAction(currentPos, actionId);
+        PathSet newPathSet = pathSet.addAction(currentPos, new MessageAction(text));
         stack.set(DataComponentRegistry.PATH_SET.get(), newPathSet);
 
         source.sendSuccess(() -> Component.translatable("command.path_script.action_added", text, currentPos.toShortString()), true);
