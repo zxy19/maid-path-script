@@ -11,6 +11,15 @@
   "command.path_script.cannot_delete_start": "不能删除起始节点。",
   "command.path_script.node_deleted": "节点 %s 已删除。",
   "command.path_script.action_added": "动作 \"%s\" 已添加到节点 %s。",
-  "action.path_script.message": "§a[A] §f消息"
-}
+  "action.path_script.message": "§a[A] §f消息",
+  "screen.path_script.edit_node": "编辑节点 %s",
+  "screen.path_script.add_action": "+ 添加动作",
+  "screen.path_script.delete_node": "删除节点",
+  "screen.path_script.confirm_delete_node": "确认删除",
+  "screen.path_script.edit": "编辑",
+  "screen.path_script.delete": "删除",
+  "item.path_script.path_editor.not_owner": "这个女仆不属于你。",
+  "item.path_script.path_editor.no_path": "编辑器上没有路径数据。",
+  "item.path_script.path_editor.maid_set": "%s 已进入路径导航模式，起点: %s。",
+  "task.path_script.path_navigate": "路径导航"
 }

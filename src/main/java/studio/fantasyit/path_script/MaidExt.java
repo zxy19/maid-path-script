@@ -18,7 +18,7 @@ import java.util.List;
 public class MaidExt implements ILittleMaid {
     @Override
     public void addMaidTask(TaskManager manager) {
-        ILittleMaid.super.addMaidTask(manager);
+        manager.add(new MaidPathScriptTask());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MaidExt implements ILittleMaid {
             public List<MemoryModuleType<?>> getExtraMemoryTypes() {
                 return List.of(
                         MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get(),
-                        MemoryModuleRegistry.CURRENT_NODE.get()
+                        MemoryModuleRegistry.NEXT_NODE.get()
                 );
             }
 

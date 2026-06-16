@@ -12,12 +12,12 @@ public class MemoryUtil {
         return maid.getBrain().getMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
     }
     public static Optional<BlockPos> getCurrentNode(EntityMaid maid) {
-        return maid.getBrain().getMemory(MemoryModuleRegistry.CURRENT_NODE.get());
+        return maid.getBrain().getMemory(MemoryModuleRegistry.NEXT_NODE.get());
     }
     public static void setPathSet(EntityMaid maid, PathSet pathSet) {
         maid.getBrain().setMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get(), pathSet);
     }
     public static void setCurrentNode(EntityMaid maid, BlockPos pos) {
-        maid.getBrain().setMemory(MemoryModuleRegistry.CURRENT_NODE.get(), pos);
+        maid.getBrain().setMemory(MemoryModuleRegistry.NEXT_NODE.get(), pos);
     }
 }

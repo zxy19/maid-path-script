@@ -8,19 +8,23 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
-import studio.fantasyit.path_script.behavior.MaidFollowPathMoveBehavior;
+import studio.fantasyit.path_script.behavior.MaidContinueMoveBehavior;
+import studio.fantasyit.path_script.behavior.MaidSwitchPathNode;
+import studio.fantasyit.path_script.behavior.MaidWaitOwnerBehavior;
+import studio.fantasyit.path_script.reg.ItemRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MaidPathScriptTask implements IMaidTask {
     @Override
     public Identifier getUid() {
-        return null;
+        return PathScript.id("path_navigate");
     }
 
     @Override
     public ItemStack getIcon() {
-        return null;
+        return new ItemStack(ItemRegistry.PATH_EDITOR.get());
     }
 
     @Override
@@ -30,6 +34,20 @@ public class MaidPathScriptTask implements IMaidTask {
 
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
-        return List.of(Pair.of(2, new MaidFollowPathMoveBehavior()));
+        return new ArrayList<>(List.of(
+                Pair.of(1, new MaidWaitOwnerBehavior()),
+                Pair.of(1, new MaidContinueMoveBehavior()),
+                Pair.of(2, new MaidSwitchPathNode())
+        ));
+    }
+
+    @Override
+    public boolean enableLookAndRandomWalk(EntityMaid maid) {
+        return false;
+    }
+
+    @Override
+    public boolean enablePanic(EntityMaid maid) {
+        return false;
     }
 }

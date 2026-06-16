@@ -172,6 +172,21 @@ public class PathSet {
         return new PathSet(startPos, newNodes);
     }
 
+    public PathSet setActions(BlockPos pos, List<IAction> actions) {
+        if (!map.containsKey(pos)) {
+            return this;
+        }
+        List<PathNode> newNodes = new ArrayList<>();
+        for (PathNode node : nodes) {
+            if (node.pos().equals(pos)) {
+                newNodes.add(new PathNode(node.pos(), node.next(), actions));
+            } else {
+                newNodes.add(node);
+            }
+        }
+        return new PathSet(startPos, newNodes);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != PathSet.class) return false;
@@ -182,5 +197,9 @@ public class PathSet {
     @Override
     public int hashCode() {
         return startPos.hashCode() ^ nodes.hashCode();
+    }
+
+    public PathNode getNode(BlockPos nextPos) {
+        return map.get(nextPos);
     }
 }

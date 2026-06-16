@@ -18,8 +18,8 @@ public class MemoryModuleRegistry {
     public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<PathSet>> CURRENT_PATH_SCRIPT
             = REGISTER.register("current_path_script", () -> new MemoryModuleType<>(Optional.empty()));
 
-    public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<BlockPos>> CURRENT_NODE
-            = REGISTER.register("current_node", () -> new MemoryModuleType<>(Optional.empty()));
+    public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<BlockPos>> NEXT_NODE
+            = REGISTER.register("next_node", () -> new MemoryModuleType<>(Optional.empty()));
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);

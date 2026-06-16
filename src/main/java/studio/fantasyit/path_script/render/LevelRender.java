@@ -1,10 +1,14 @@
 package studio.fantasyit.path_script.render;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -17,6 +21,7 @@ import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 import studio.fantasyit.path_script.reg.ItemRegistry;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,7 +47,22 @@ public class LevelRender {
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
         Map<BlockPos, Integer> floating = new ConcurrentHashMap<>();
         renderForRequest(poseStack, submitNodeCollector, camera, partialTick, mc, floating);
+        renderDebug(poseStack, submitNodeCollector, camera, partialTick, mc, floating);
+    }
 
+    private static void renderDebug(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, float partialTick, Minecraft mc, Map<BlockPos, Integer> floating) {
+        List<Entity> entities = mc.level.getEntities(mc.player, mc.player.getBoundingBox().inflate(32));
+        for (Entity entity : entities) {
+            if (entity instanceof EntityMaid maid) {
+                if (maid.hasHome())
+                    BoxRenderUtil.renderStorage(maid.getHomePosition(), colors_r, poseStack, submitNodeCollector, camera, Component.literal("home"), floating);
+                maid.getBrain().getMemory(MemoryModuleType.PATH).ifPresent(t -> {
+                    for (int i = 0; i < t.getNodeCount(); i++) {
+                        BoxRenderUtil.renderStorage(t.getNodePos(i), colors_g, poseStack, submitNodeCollector, camera, Component.literal("node[" + i + "]"), floating);
+                    }
+                });
+            }
+        }
     }
 
 

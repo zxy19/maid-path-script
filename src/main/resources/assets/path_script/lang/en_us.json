@@ -11,5 +11,15 @@
   "command.path_script.cannot_delete_start": "Cannot delete the start node.",
   "command.path_script.node_deleted": "Node %s deleted.",
   "command.path_script.action_added": "Action \"%s\" added to node %s.",
-  "action.path_script.message": "§a[A] §fMessage"
+  "action.path_script.message": "§a[A] §fMessage",
+  "screen.path_script.edit_node": "Edit Node %s",
+  "screen.path_script.add_action": "+ Add Action",
+  "screen.path_script.delete_node": "Delete Node",
+  "screen.path_script.confirm_delete_node": "Confirm Delete",
+  "screen.path_script.edit": "Edit",
+  "screen.path_script.delete": "Delete",
+  "item.path_script.path_editor.not_owner": "This maid does not belong to you.",
+  "item.path_script.path_editor.no_path": "No path data on this editor.",
+  "item.path_script.path_editor.maid_set": "%s is now navigating the path, starting at %s.",
+  "task.path_script.path_navigate": "Path Navigate"
 }
