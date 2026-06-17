@@ -103,6 +103,27 @@ public class PathSet {
         return new PathSet(startPos, newNodes);
     }
 
+    public PathSet addEdge(BlockPos from, BlockPos to) {
+        if (!map.containsKey(from) || !map.containsKey(to)) {
+            return this;
+        }
+        PathNode fromNode = map.get(from);
+        if (fromNode.next().contains(to)) {
+            return this;
+        }
+        List<PathNode> newNodes = new ArrayList<>();
+        for (PathNode node : nodes) {
+            if (node.pos().equals(from)) {
+                List<BlockPos> newNext = new ArrayList<>(node.next());
+                newNext.add(to);
+                newNodes.add(new PathNode(node.pos(), newNext, node.actions()));
+            } else {
+                newNodes.add(node);
+            }
+        }
+        return new PathSet(startPos, newNodes);
+    }
+
     public List<BlockPos> getNext(BlockPos pos) {
         PathNode node = map.get(pos);
         return node == null ? Collections.emptyList() : node.next();

@@ -19,6 +19,7 @@ public class CreativeTabRegistry {
             .icon(() -> new ItemStack(ItemRegistry.PATH_EDITOR.get()))
             .displayItems((parameters, output) -> {
                 output.accept(ItemRegistry.PATH_EDITOR.get());
+                output.accept(ItemRegistry.GUIDE_SIGN.get());
             })
             .build());
 

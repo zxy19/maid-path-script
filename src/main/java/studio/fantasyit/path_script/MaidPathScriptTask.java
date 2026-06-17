@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import studio.fantasyit.path_script.behavior.MaidContinueMoveBehavior;
 import studio.fantasyit.path_script.behavior.MaidSwitchPathNode;
+import studio.fantasyit.path_script.behavior.MaidTeleportToOwnerBehavior;
 import studio.fantasyit.path_script.behavior.MaidWaitBeforeMultipleSelector;
 import studio.fantasyit.path_script.behavior.MaidWaitOwnerBehavior;
 import studio.fantasyit.path_script.reg.ItemRegistry;
@@ -36,6 +37,7 @@ public class MaidPathScriptTask implements IMaidTask {
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
         return new ArrayList<>(List.of(
+                Pair.of(0, new MaidTeleportToOwnerBehavior()),
                 Pair.of(1, new MaidWaitOwnerBehavior()),
                 Pair.of(1, new MaidContinueMoveBehavior()),
                 Pair.of(2, new MaidSwitchPathNode()),

@@ -20,6 +20,7 @@ public class DataGen {
             @Override
             protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
                 itemModels.generateFlatItem(ItemRegistry.PATH_EDITOR.get(), Items.PAPER, ModelTemplates.FLAT_ITEM);
+                itemModels.generateFlatItem(ItemRegistry.GUIDE_SIGN.get(), Items.BOOK, ModelTemplates.FLAT_ITEM);
             }
         });
     }

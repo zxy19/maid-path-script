@@ -41,9 +41,41 @@ public class PathEditorItem extends Item {
         BlockPos clickedPos = context.getClickedPos();
         BlockPos targetPos = clickedPos.relative(context.getClickedFace());
         ItemStack stack = context.getItemInHand();
+        Player player = context.getPlayer();
 
         BlockPos currentPos = stack.get(DataComponentRegistry.CURRENT_POS.get());
         PathSet pathSet = stack.get(DataComponentRegistry.PATH_SET.get());
+
+        if (player != null && player.isShiftKeyDown()) {
+            if (pathSet == null) {
+                player.sendSystemMessage(Component.translatable("item.path_script.path_editor.no_path"));
+                return InteractionResult.FAIL;
+            }
+            if (currentPos == null) {
+                player.sendSystemMessage(Component.translatable("item.path_script.path_editor.no_node_selected"));
+                return InteractionResult.FAIL;
+            }
+            if (!pathSet.contains(targetPos)) {
+                player.sendSystemMessage(Component.translatable("item.path_script.path_editor.not_a_node", targetPos.toShortString()));
+                return InteractionResult.FAIL;
+            }
+            if (currentPos.equals(targetPos)) {
+                player.sendSystemMessage(Component.translatable("item.path_script.path_editor.cannot_connect_self"));
+                return InteractionResult.FAIL;
+            }
+            if (pathSet.isAncestor(targetPos, currentPos)) {
+                player.sendSystemMessage(Component.translatable("item.path_script.path_editor.would_create_cycle"));
+                return InteractionResult.FAIL;
+            }
+            pathSet = pathSet.addEdge(currentPos, targetPos);
+            stack.set(DataComponentRegistry.PATH_SET.get(), pathSet);
+            stack.set(DataComponentRegistry.CURRENT_POS.get(), targetPos);
+            player.sendSystemMessage(
+                    Component.translatable("item.path_script.path_editor.edge_connected",
+                            currentPos.toShortString(), targetPos.toShortString())
+            );
+            return InteractionResult.SUCCESS;
+        }
 
         if (pathSet != null && pathSet.contains(targetPos)) {
             if (targetPos.equals(currentPos) && context.getPlayer() instanceof ServerPlayer sp) {
@@ -61,7 +93,6 @@ public class PathEditorItem extends Item {
             stack.set(DataComponentRegistry.CURRENT_POS.get(), targetPos);
         }
 
-        Player player = context.getPlayer();
         if (player != null) {
             player.sendSystemMessage(
                     Component.translatable("item.path_script.path_editor.selected", targetPos.toShortString())

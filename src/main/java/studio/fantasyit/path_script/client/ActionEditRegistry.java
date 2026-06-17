@@ -47,6 +47,7 @@ public class ActionEditRegistry {
         register(MessageAction.ID, () -> new MessageAction(""), MessageActionEditor::create);
         register(IconAction.ID, () -> new IconAction(new ArrayList<>()), IconActionEditor::create);
         register(LabelAction.ID, () -> new LabelAction(""), LabelActionEditor::create);
+        register(SoundAction.ID, () -> new SoundAction(Identifier.fromNamespaceAndPath("minecraft", "entity.experience_orb.pickup"), 1.0F, 1.0F), SoundActionEditor::create);
     }
 
     private record Entry(Supplier<IAction> defaultFactory, @Nullable ActionEditorFactory editorFactory) {

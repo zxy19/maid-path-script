@@ -21,5 +21,14 @@
   "item.path_script.path_editor.not_owner": "这个女仆不属于你。",
   "item.path_script.path_editor.no_path": "编辑器上没有路径数据。",
   "item.path_script.path_editor.maid_set": "%s 已进入路径导航模式，起点: %s。",
-  "task.path_script.path_navigate": "路径导航"
+  "item.path_script.path_editor.no_node_selected": "没有选中的节点，请先左键点击选择一个节点。",
+  "item.path_script.path_editor.not_a_node": "%s 不是路径中的节点。",
+  "item.path_script.path_editor.cannot_connect_self": "不能连接自身。",
+  "item.path_script.path_editor.would_create_cycle": "此连接会产生环路，已阻止。",
+  "item.path_script.path_editor.edge_connected": "已连接 %s -> %s。",
+  "action.path_script.sound": "§a[S] §f%s",
+  "task.path_script.path_navigate": "路径导航",
+  "item.path_script.guide_sign": "导游牌",
+  "item.path_script.guide_sign.no_path": "导游牌上没有路径数据，请先在铁砧上与路径编辑器合成。",
+  "item.path_script.guide_sign.maid_created": "已创建导游女仆，起点: %s。"
 }

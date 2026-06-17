@@ -7,8 +7,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.config.ModConfig;
 import studio.fantasyit.path_script.action.ActionManager;
 import studio.fantasyit.path_script.command.PathEditorCommand;
+import studio.fantasyit.path_script.event.AnvilHandler;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.CreativeTabRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
@@ -31,7 +33,9 @@ public class PathScript {
         CreativeTabRegistry.register(modEventBus);
         AttachmentRegistry.register(modEventBus);
         ActionManager.init();
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         NeoForge.EVENT_BUS.register(PathEditorCommand.class);
         NeoForge.EVENT_BUS.register(ServerTickHandler.class);
+        NeoForge.EVENT_BUS.register(AnvilHandler.class);
     }
 }

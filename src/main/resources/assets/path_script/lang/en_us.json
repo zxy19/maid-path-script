@@ -22,8 +22,17 @@
   "item.path_script.path_editor.not_owner": "This maid does not belong to you.",
   "item.path_script.path_editor.no_path": "No path data on this editor.",
   "item.path_script.path_editor.maid_set": "%s is now navigating the path, starting at %s.",
+  "item.path_script.path_editor.no_node_selected": "No node selected. Left-click a node first.",
+  "item.path_script.path_editor.not_a_node": "%s is not a node in the path.",
+  "item.path_script.path_editor.cannot_connect_self": "Cannot connect a node to itself.",
+  "item.path_script.path_editor.would_create_cycle": "This connection would create a cycle. Blocked.",
+  "item.path_script.path_editor.edge_connected": "Connected %s -> %s.",
   "task.path_script.path_navigate": "Path Navigate",
   "path.wait_before": "Which way shall we go then?",
   "action.path_script.icon": "Icon[ %s ]",
-  "path.next_step": "Next Step"
+  "action.path_script.sound": "[S] %s",
+  "path.next_step": "Next Step",
+  "item.path_script.guide_sign": "Guide Sign",
+  "item.path_script.guide_sign.no_path": "No path data on this guide sign. Combine with a Path Editor on an anvil first.",
+  "item.path_script.guide_sign.maid_created": "Guide maid created, starting at %s."
 }
