@@ -8,14 +8,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jspecify.annotations.Nullable;
 import studio.fantasyit.path_script.PathScript;
-import studio.fantasyit.path_script.action.ActionManager;
-import studio.fantasyit.path_script.action.IAction;
-import studio.fantasyit.path_script.action.MessageAction;
+import studio.fantasyit.path_script.action.*;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = PathScript.MODID)
@@ -23,7 +18,7 @@ public class ActionEditRegistry {
     private static final Map<Identifier, Entry> ENTRIES = new HashMap<>();
 
     public static void register(Identifier id, Supplier<IAction> defaultFactory,
-                                 @Nullable ActionEditorFactory editorFactory) {
+                                @Nullable ActionEditorFactory editorFactory) {
         ENTRIES.put(id, new Entry(defaultFactory, editorFactory));
     }
 
@@ -50,6 +45,8 @@ public class ActionEditRegistry {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         register(MessageAction.ID, () -> new MessageAction(""), MessageActionEditor::create);
+        register(IconAction.ID, () -> new IconAction(new ArrayList<>()), null);
+        register(LabelAction.ID, () -> new LabelAction(""), null);
     }
 
     private record Entry(Supplier<IAction> defaultFactory, @Nullable ActionEditorFactory editorFactory) {

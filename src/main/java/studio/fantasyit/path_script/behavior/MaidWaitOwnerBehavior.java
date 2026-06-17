@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.data.PathSet;
@@ -38,5 +39,8 @@ public class MaidWaitOwnerBehavior extends Behavior<EntityMaid> {
     @Override
     protected void start(ServerLevel level, EntityMaid maid, long timestamp) {
         maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+        LivingEntity owner = maid.getOwner();
+        if (owner == null) return;
+        maid.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(owner, true));
     }
 }

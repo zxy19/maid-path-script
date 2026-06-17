@@ -1,6 +1,5 @@
 package studio.fantasyit.path_script.network;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +12,7 @@ import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.item.PathEditorItem;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
-import studio.fantasyit.path_script.screen.PathNodeEditScreen;
+import studio.fantasyit.path_script.screen.ScreenHandler;
 
 @EventBusSubscriber(modid = PathScript.MODID)
 public class NetworkHandler {
@@ -26,9 +25,7 @@ public class NetworkHandler {
                 OpenNodeEditPacket.TYPE,
                 OpenNodeEditPacket.STREAM_CODEC,
                 (payload, ctx) -> {
-                    Minecraft.getInstance().setScreen(
-                            new PathNodeEditScreen(payload.pos(), payload.actions())
-                    );
+                    ScreenHandler.openEditor(payload);
                 }
         );
 

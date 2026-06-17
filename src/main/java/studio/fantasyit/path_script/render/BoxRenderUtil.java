@@ -32,7 +32,7 @@ public class BoxRenderUtil {
         }
         Vec3 position = camera.pos.reverse();
         AABB aabb = new AABB(storage).move(position);
-        if (colors.length == 3) {
+        if (colors.length == 4) {
             submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.LINES, (poseState, consumer) -> {
                 renderBox(poseStack, consumer, aabb, colors[0], colors[1], colors[2], colors[3]);
             });

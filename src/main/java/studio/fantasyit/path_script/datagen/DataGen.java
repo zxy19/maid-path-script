@@ -5,13 +5,14 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.world.item.Items;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.reg.ItemRegistry;
 
-@EventBusSubscriber(modid = PathScript.MODID)
+@EventBusSubscriber(modid = PathScript.MODID, value = Dist.CLIENT)
 public class DataGen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Client event) {

@@ -15,6 +15,7 @@ import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,9 +61,14 @@ public class ClientMarkerRender {
 
         long mills = Util.getMillis();
         if ((mills / 50) % 2 != 0) return;
+        renderPath(marker.pathIndicator, mills, mc);
+        renderPath(marker.pathIndicatorLast, mills, mc);
+    }
+
+    private static void renderPath(List<BlockPos> path, long mills, Minecraft mc) {
         BlockPos last = null;
-        for (BlockPos node : marker.pathIndicator) {
-            if(last != null){
+        for (BlockPos node : path) {
+            if (last != null) {
                 Vec3 c1 = last.getCenter();
                 Vec3 c2 = node.getCenter();
                 Vec3 delta = c2.subtract(c1);
