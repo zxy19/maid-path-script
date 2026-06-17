@@ -31,7 +31,7 @@ public record LabelAction(String message) implements IAction {
 
     @Override
     public Component getDisplayComponent() {
-        return Component.translatable("action.path_script.message", message);
+        return Component.translatable("action.path_script.label", message);
     }
 
     @Override

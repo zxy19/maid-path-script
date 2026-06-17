@@ -1,15 +1,18 @@
 package studio.fantasyit.path_script.behavior;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.action.IAction;
+import studio.fantasyit.path_script.action.LabelAction;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
@@ -53,12 +56,17 @@ public class MaidWaitBeforeMultipleSelector extends Behavior<EntityMaid> {
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return;
         marker.tip.clear();
+        marker.selectionPos.clear();
         marker.currentShowingTip = Component.translatable("path.wait_before");
         for (BlockPos next : path.get().getNode(cur.get()).next()) {
             PathNode n = path.get().getNode(next);
-            for(IAction a :n.actions()){
-                if(a)
+            for (IAction a : n.actions()) {
+                if (a instanceof LabelAction(String message))
+                    marker.tip.add(new Pair<>(Component.literal(message), next));
             }
+            marker.selectionPos.add(next);
         }
+        player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
+        maid.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(player, true));
     }
 }

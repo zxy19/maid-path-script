@@ -20,6 +20,7 @@ public class PathMarker {
 
     public Component currentShowingTip = Component.empty();
     public List<Pair<Component, BlockPos>> tip = new ArrayList<>();
+    public List<BlockPos> selectionPos = new ArrayList<>();
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Pair<Component, BlockPos>> TIP_STREAM_CODEC = StreamCodec.composite(
             ComponentSerialization.STREAM_CODEC, Pair::getFirst,
@@ -28,6 +29,8 @@ public class PathMarker {
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PathMarker> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            m -> m.lastUpdatedNode,
             UUIDUtil.STREAM_CODEC.apply(ByteBufCodecs::optional),
             m -> Optional.ofNullable(m.pathingMaidEntity),
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
@@ -38,13 +41,17 @@ public class PathMarker {
             m -> m.currentShowingTip,
             TIP_STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.tip,
-            (uuid, blocks, blocksLast, component, tips) -> {
+            BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            m -> m.selectionPos,
+            (lastUpdated, uuid, blocks, blocksLast, component, tips, selection) -> {
                 var pm = new PathMarker();
+                pm.lastUpdatedNode = lastUpdated;
                 pm.pathingMaidEntity = uuid.orElse(null);
                 pm.pathIndicator = blocks;
                 pm.pathIndicatorLast = blocksLast;
                 pm.tip = tips;
                 pm.currentShowingTip = component;
+                pm.selectionPos = selection;
                 return pm;
             }
     );

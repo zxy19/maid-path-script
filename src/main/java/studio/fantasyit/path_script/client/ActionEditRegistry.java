@@ -45,8 +45,8 @@ public class ActionEditRegistry {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         register(MessageAction.ID, () -> new MessageAction(""), MessageActionEditor::create);
-        register(IconAction.ID, () -> new IconAction(new ArrayList<>()), null);
-        register(LabelAction.ID, () -> new LabelAction(""), null);
+        register(IconAction.ID, () -> new IconAction(new ArrayList<>()), IconActionEditor::create);
+        register(LabelAction.ID, () -> new LabelAction(""), LabelActionEditor::create);
     }
 
     private record Entry(Supplier<IAction> defaultFactory, @Nullable ActionEditorFactory editorFactory) {

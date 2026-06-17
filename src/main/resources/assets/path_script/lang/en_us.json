@@ -24,5 +24,6 @@
   "item.path_script.path_editor.maid_set": "%s is now navigating the path, starting at %s.",
   "task.path_script.path_navigate": "Path Navigate",
   "path.wait_before": "Which way shall we go then?",
-  "action.path_script.icon": "Icon[ %s ]"
+  "action.path_script.icon": "Icon[ %s ]",
+  "path.next_step": "Next Step"
 }

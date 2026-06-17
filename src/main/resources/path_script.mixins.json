@@ -1,16 +1,11 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "studio.fantasyit.path_script.mixin",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "path_script.refmap.json",
   "mixins": [
+    "EntityMaidMixin"
   ],
-  "client": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "overwrites": {
-    "requireAnnotations": true
-  }
+  "client": [],
+  "server": []
 }
