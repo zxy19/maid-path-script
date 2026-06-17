@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import net.neoforged.neoforge.common.NeoForge;
 import studio.fantasyit.path_script.action.ActionManager;
 import studio.fantasyit.path_script.command.PathEditorCommand;
+import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.CreativeTabRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 import studio.fantasyit.path_script.reg.ItemRegistry;
@@ -28,7 +29,9 @@ public class PathScript {
         DataComponentRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
+        AttachmentRegistry.register(modEventBus);
         ActionManager.init();
         NeoForge.EVENT_BUS.register(PathEditorCommand.class);
+        NeoForge.EVENT_BUS.register(ServerTickHandler.class);
     }
 }

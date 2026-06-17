@@ -14,8 +14,7 @@ public class PathSet {
     final Map<BlockPos, PathNode> map;
     final BlockPos startPos;
     final List<PathNode> nodes;
-    final Map<BlockPos, Integer> depthMap;
-    final Map<BlockPos, BlockPos> parentMap;
+    final Map<BlockPos, Set<BlockPos>> parentMap;
 
 
     public static final Codec<PathSet> CODEC = RecordCodecBuilder.create(instance ->
@@ -38,46 +37,44 @@ public class PathSet {
         for (PathNode node : nodes) {
             map.put(node.pos(), node);
         }
-        depthMap = new HashMap<>();
         parentMap = new HashMap<>();
         Deque<BlockPos> queue = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         queue.add(startPos);
         visited.add(startPos);
-        depthMap.put(startPos, 0);
-        int depth = 0;
         while (!queue.isEmpty()) {
-            int size = queue.size();
-            depth++;
-            for (int i = 0; i < size; i++) {
-                BlockPos current = queue.poll();
-                for (BlockPos nextPos : getNext(current)) {
-                    if (!visited.contains(nextPos)) {
-                        visited.add(nextPos);
-                        depthMap.put(nextPos, depth);
-                        parentMap.put(nextPos, current);
-                        queue.add(nextPos);
-                    }
+            BlockPos current = queue.poll();
+            for (BlockPos nextPos : getNext(current)) {
+                parentMap.computeIfAbsent(nextPos, k -> new HashSet<>()).add(current);
+                if (!visited.contains(nextPos)) {
+                    visited.add(nextPos);
+                    queue.add(nextPos);
                 }
             }
         }
     }
 
-    public int getDepth(BlockPos pos) {
-        return depthMap.getOrDefault(pos, -1);
-    }
-
-    public BlockPos getParent(BlockPos pos) {
-        return parentMap.get(pos);
+    public Set<BlockPos> getParent(BlockPos pos) {
+        return parentMap.getOrDefault(pos, Collections.emptySet());
     }
 
     public boolean isAncestor(BlockPos ancestor, BlockPos descendant) {
-        BlockPos current = descendant;
-        while (current != null) {
+        Set<BlockPos> visited = new HashSet<>();
+        Deque<BlockPos> stack = new ArrayDeque<>();
+        stack.push(descendant);
+        while (!stack.isEmpty()) {
+            BlockPos current = stack.pop();
             if (current.equals(ancestor)) {
                 return true;
             }
-            current = parentMap.get(current);
+            if (!visited.add(current)) {
+                continue;
+            }
+            for (BlockPos parent : getParent(current)) {
+                if (!visited.contains(parent)) {
+                    stack.push(parent);
+                }
+            }
         }
         return false;
     }

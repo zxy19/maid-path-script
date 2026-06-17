@@ -4,6 +4,8 @@ import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 
@@ -15,13 +17,13 @@ public class BehaviorConditions {
         if (playerNearest.pos().equals(nextPos)) {
             return true;
         }
-        BlockPos pref = pathSet.getParent(nextPos);
-        if (pref != null && pref.equals(playerNearest.pos())) {
+        Set<BlockPos> parents = pathSet.getParent(nextPos);
+        if (parents.contains(playerNearest.pos())) {
             return true;
         }
         PathNode maidNearest = pathSet.getNearest(maid.blockPosition());
-        BlockPos maidPref = pathSet.getParent(maidNearest.pos());
-        if (maidPref != null && maidPref.equals(playerNearest.pos())) {
+        Set<BlockPos> maidParents = pathSet.getParent(maidNearest.pos());
+        if (maidParents.contains(playerNearest.pos())) {
             return true;
         }
         return isOwnerAheadOfMaid(maid, owner, nextPos, pathSet);

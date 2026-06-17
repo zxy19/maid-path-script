@@ -32,9 +32,11 @@ public class BoxRenderUtil {
         }
         Vec3 position = camera.pos.reverse();
         AABB aabb = new AABB(storage).move(position);
-        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.LINES, (poseState, consumer) -> {
-            renderBox(poseStack, consumer, aabb, colors[0], colors[1], colors[2], colors[3]);
-        });
+        if (colors.length == 3) {
+            submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.LINES, (poseState, consumer) -> {
+                renderBox(poseStack, consumer, aabb, colors[0], colors[1], colors[2], colors[3]);
+            });
+        }
         if (!key.getString().isEmpty()) {
             Vec3 livingFrom = storage.getCenter().add(0, 0.7f, 0);
             drawText(poseStack, mc, camera, submitNodeCollector, livingFrom, key, textColor, floating.getOrDefault(storage, 0) * 0.3f);
