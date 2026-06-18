@@ -41,7 +41,7 @@ public class MaidWaitBeforeMultipleSelector extends Behavior<EntityMaid> {
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return false;
         if (maid.distanceToSqr(cur.get().getCenter()) > 4) return false;
-        if (!BehaviorConditions.shouldSelectNextForMaid(maid, owner, cur.get(), path.get()))
+        if (!BehaviorAndConditions.shouldSelectNextForMaid(maid, owner, cur.get(), path.get()))
             return path.get().getNode(cur.get()).next().size() > 1;
         return false;
     }

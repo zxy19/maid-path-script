@@ -5,18 +5,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import studio.fantasyit.path_script.Config;
+import studio.fantasyit.path_script.MaidPathScriptTask;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
+import studio.fantasyit.path_script.memory.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BehaviorConditions {
+public class BehaviorAndConditions {
 
     private static final int MARKER_DEPTH = 3;
 
@@ -90,5 +95,26 @@ public class BehaviorConditions {
         marker.pathIndicatorLast = marker.pathIndicator;
         marker.pathIndicator = newIndicator;
         player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
+    }
+
+    public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player) {
+        PathNode node = pathSet.getNearest(player.blockPosition());
+        if (node == null || node.pos().distToCenterSqr(player.position()) > Config.clearDistance * Config.clearDistance)
+            return;
+        if (maid.getOwnerReference() == null) {
+            maid.setOwner(player);
+        } else if (!maid.getOwnerReference().matches(player)) {
+            return;
+        }
+
+        maid.setHomeModeEnable(true);
+        maid.getTaskManager().setTask(new MaidPathScriptTask());
+        MemoryUtil.setPathSet(maid, pathSet);
+        MemoryUtil.setCurrentNode(maid, node.pos());
+        Vec3 center = node.pos().getCenter();
+        maid.teleportTo(center.x, center.y, center.z);
+        maid.setHomeTo(node.pos(), maid.getHomeRadius());
+        maid.getSchedulePos().setWorkPos(node.pos());
+        maid.getNavigationManager().resetNavigation();
     }
 }

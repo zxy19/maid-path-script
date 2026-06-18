@@ -32,7 +32,7 @@ public class MaidSwitchPathNode extends Behavior<EntityMaid> {
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return false;
         if (maid.distanceToSqr(cur.get().getCenter()) > 4) return false;
-        if (!BehaviorConditions.shouldSelectNextForMaid(maid, owner, cur.get(), path.get()))
+        if (!BehaviorAndConditions.shouldSelectNextForMaid(maid, owner, cur.get(), path.get()))
             return false;
         return true;
     }
@@ -46,13 +46,13 @@ public class MaidSwitchPathNode extends Behavior<EntityMaid> {
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return;
 
-        BlockPos pos = BehaviorConditions.getSelectedNextForMaid(maid, owner, cur.get(), path.get());
+        BlockPos pos = BehaviorAndConditions.getSelectedNextForMaid(maid, owner, cur.get(), path.get());
         if (pos == null) return;
 
         MemoryUtil.setCurrentNode(maid, pos);
         maid.setHomeTo(pos, maid.getHomeRadius());
         maid.getSchedulePos().setWorkPos(pos);
         BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, 0.5f, 1);
-        BehaviorConditions.updatePathMarker(maid, owner, path.get(), pos);
+        BehaviorAndConditions.updatePathMarker(maid, owner, path.get(), pos);
     }
 }

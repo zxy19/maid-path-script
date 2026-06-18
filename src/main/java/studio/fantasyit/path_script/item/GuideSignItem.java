@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,9 +17,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import studio.fantasyit.path_script.MaidPathScriptTask;
+import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 
@@ -56,33 +56,26 @@ public class GuideSignItem extends Item {
         }
 
         Optional<UUID> existingUuid = player.getData(AttachmentRegistry.GUIDE_MAID.get());
-        existingUuid.ifPresent(uuid -> {
-            var entity = serverLevel.getEntity(uuid);
-            if (entity instanceof EntityMaid maid && maid.isAlive()) {
-                maid.discard();
+        if (existingUuid.isPresent()) {
+            existingUuid.ifPresent(uuid -> {
+                var entity = serverLevel.getEntity(uuid);
+                if (entity instanceof EntityMaid maid && maid.isAlive()) {
+                    maid.discard();
+                }
+            });
+            player.setData(AttachmentRegistry.GUIDE_MAID, Optional.empty());
+        } else {
+            EntityMaid maid = EntityMaid.TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+            if (maid == null) {
+                return InteractionResult.FAIL;
             }
-        });
-
-        EntityMaid maid = EntityMaid.TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
-        if (maid == null) {
-            return InteractionResult.FAIL;
+            maid.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.SPAWN_ITEM_USE, null);
+            level.addFreshEntity(maid);
+            level.getServer().schedule(new TickTask(1, () -> {
+                player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
+                BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
+            }));
         }
-
-        maid.tame(player);
-        maid.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.SPAWN_ITEM_USE, null);
-
-        MemoryUtil.setPathSet(maid, pathSet);
-        MemoryUtil.setCurrentNode(maid, pathSet.getStartPos());
-        maid.getTaskManager().setTask(new MaidPathScriptTask());
-
-        maid.setPos(pathSet.getStartPos().getX() + 0.5, pathSet.getStartPos().getY(), pathSet.getStartPos().getZ() + 0.5);
-        serverLevel.addFreshEntity(maid);
-        maid.getNavigationManager().resetNavigation();
-
-        player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
-
-        player.sendSystemMessage(Component.translatable("item.path_script.guide_sign.maid_created", pathSet.getStartPos().toShortString()));
-
         return InteractionResult.SUCCESS;
     }
 

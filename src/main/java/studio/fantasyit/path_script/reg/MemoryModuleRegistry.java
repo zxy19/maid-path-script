@@ -16,10 +16,10 @@ public class MemoryModuleRegistry {
             = DeferredRegister.create(Registries.MEMORY_MODULE_TYPE, PathScript.MODID);
 
     public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<PathSet>> CURRENT_PATH_SCRIPT
-            = REGISTER.register("current_path_script", () -> new MemoryModuleType<>(Optional.empty()));
+            = REGISTER.register("current_path_script", () -> new MemoryModuleType<>(Optional.of(PathSet.CODEC)));
 
     public static final DeferredHolder<MemoryModuleType<?>, MemoryModuleType<BlockPos>> NEXT_NODE
-            = REGISTER.register("next_node", () -> new MemoryModuleType<>(Optional.empty()));
+            = REGISTER.register("next_node", () -> new MemoryModuleType<>(Optional.of(BlockPos.CODEC)));
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);

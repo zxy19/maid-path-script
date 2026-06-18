@@ -33,7 +33,7 @@ public class MaidWaitOwnerBehavior extends Behavior<EntityMaid> {
         if (path.isEmpty()) return false;
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return false;
-        return !BehaviorConditions.isOwnerAvailableForMove(maid, owner, cur.get(), path.get());
+        return !BehaviorAndConditions.isOwnerAvailableForMove(maid, owner, cur.get(), path.get());
     }
 
     @Override

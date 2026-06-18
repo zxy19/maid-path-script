@@ -8,11 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
-import studio.fantasyit.path_script.behavior.MaidContinueMoveBehavior;
-import studio.fantasyit.path_script.behavior.MaidSwitchPathNode;
-import studio.fantasyit.path_script.behavior.MaidTeleportToOwnerBehavior;
-import studio.fantasyit.path_script.behavior.MaidWaitBeforeMultipleSelector;
-import studio.fantasyit.path_script.behavior.MaidWaitOwnerBehavior;
+import studio.fantasyit.path_script.behavior.*;
 import studio.fantasyit.path_script.reg.ItemRegistry;
 
 import java.util.ArrayList;
@@ -41,7 +37,8 @@ public class MaidPathScriptTask implements IMaidTask {
                 Pair.of(1, new MaidWaitOwnerBehavior()),
                 Pair.of(1, new MaidContinueMoveBehavior()),
                 Pair.of(2, new MaidSwitchPathNode()),
-                Pair.of(2, new MaidWaitBeforeMultipleSelector())
+                Pair.of(2, new MaidWaitBeforeMultipleSelector()),
+                Pair.of(3, new MaidLeavePathModeBehavior())
         ));
     }
 

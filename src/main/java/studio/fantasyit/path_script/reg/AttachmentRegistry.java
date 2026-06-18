@@ -1,5 +1,6 @@
 package studio.fantasyit.path_script.reg;
 
+import net.minecraft.core.UUIDUtil;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -22,7 +23,8 @@ public class AttachmentRegistry {
     );
 
     public static final Supplier<AttachmentType<Optional<UUID>>> GUIDE_MAID = ATTACHMENT_TYPES.register(
-            "guide_maid", () -> AttachmentType.builder(() -> Optional.<UUID>empty())
+            "guide_maid", () -> AttachmentType.builder(Optional::<UUID>empty)
+                    .serialize(UUIDUtil.CODEC.optionalFieldOf("uuid"))
                     .build()
     );
 

@@ -17,9 +17,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import studio.fantasyit.path_script.MaidPathScriptTask;
+import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
+import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
 import studio.fantasyit.path_script.network.NetworkHandler;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 
@@ -85,7 +85,7 @@ public class PathEditorItem extends Item {
             stack.set(DataComponentRegistry.CURRENT_POS.get(), targetPos);
         } else {
             if (pathSet == null) {
-                pathSet = new PathSet(targetPos, List.of());
+                pathSet = new PathSet(List.of(new PathNode(targetPos, List.of(), List.of())));
             } else {
                 pathSet = pathSet.addNode(currentPos, targetPos);
             }
@@ -123,24 +123,7 @@ public class PathEditorItem extends Item {
             player.sendSystemMessage(Component.translatable("item.path_script.path_editor.no_path"));
             return InteractionResult.FAIL;
         }
-
-        MemoryUtil.setPathSet(maid, pathSet);
-        MemoryUtil.setCurrentNode(maid, pathSet.getStartPos());
-        maid.getTaskManager().setTask(new MaidPathScriptTask());
-
-        maid.teleportTo(
-                pathSet.getStartPos().getX() + 0.5,
-                pathSet.getStartPos().getY(),
-                pathSet.getStartPos().getZ() + 0.5
-        );
-        maid.getNavigationManager().resetNavigation();
-
-        player.sendSystemMessage(
-                Component.translatable("item.path_script.path_editor.maid_set",
-                        maid.getDisplayName(),
-                        pathSet.getStartPos().toShortString())
-        );
-
+        BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
         return InteractionResult.SUCCESS;
     }
 

@@ -7,7 +7,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
@@ -46,7 +45,7 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
         if (path.isEmpty()) return;
 
         PathNode nearest = path.get().getNearest(owner.blockPosition());
-        double clearDist = Config.teleportClearDistance;
+        double clearDist = Config.clearDistance;
         if (nearest.pos().distSqr(owner.blockPosition()) > clearDist * clearDist) {
             maid.getBrain().eraseMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
             maid.getBrain().eraseMemory(MemoryModuleRegistry.NEXT_NODE.get());

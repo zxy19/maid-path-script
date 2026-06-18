@@ -12,44 +12,31 @@ import java.util.*;
 
 public class PathSet {
     final Map<BlockPos, PathNode> map;
-    final BlockPos startPos;
     final List<PathNode> nodes;
     final Map<BlockPos, Set<BlockPos>> parentMap;
 
 
     public static final Codec<PathSet> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    BlockPos.CODEC.fieldOf("start_pos").forGetter(PathSet::getStartPos),
                     PathNode.CODEC.listOf().fieldOf("nodes").forGetter(PathSet::getNodes)
             ).apply(instance, PathSet::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PathSet> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC, PathSet::getStartPos,
             PathNode.STREAM_CODEC.apply(ByteBufCodecs.list()), PathSet::getNodes,
             PathSet::new
     );
 
-    public PathSet(BlockPos startPos, List<PathNode> nodes) {
-        this.startPos = startPos;
+    public PathSet(List<PathNode> nodes) {
         this.nodes = nodes;
         this.map = new HashMap<>();
         for (PathNode node : nodes) {
             map.put(node.pos(), node);
         }
         parentMap = new HashMap<>();
-        Deque<BlockPos> queue = new ArrayDeque<>();
-        Set<BlockPos> visited = new HashSet<>();
-        queue.add(startPos);
-        visited.add(startPos);
-        while (!queue.isEmpty()) {
-            BlockPos current = queue.poll();
-            for (BlockPos nextPos : getNext(current)) {
-                parentMap.computeIfAbsent(nextPos, k -> new HashSet<>()).add(current);
-                if (!visited.contains(nextPos)) {
-                    visited.add(nextPos);
-                    queue.add(nextPos);
-                }
+        for (PathNode node : nodes) {
+            for (BlockPos nextPos : node.next()) {
+                parentMap.computeIfAbsent(nextPos, k -> new HashSet<>()).add(node.pos());
             }
         }
     }
@@ -80,7 +67,16 @@ public class PathSet {
     }
 
     public BlockPos getStartPos() {
-        return startPos;
+        Set<BlockPos> hasParent = new HashSet<>();
+        for (PathNode node : nodes) {
+            hasParent.addAll(node.next());
+        }
+        for (PathNode node : nodes) {
+            if (!hasParent.contains(node.pos())) {
+                return node.pos();
+            }
+        }
+        return null;
     }
 
     public List<PathNode> getNodes() {
@@ -100,7 +96,7 @@ public class PathSet {
             newNodes.replaceAll(n -> n.pos().equals(currentPos) ? new PathNode(currentPos, newNext, oldNode.actions()) : n);
         }
         newNodes.add(new PathNode(newPos, List.of(), List.of()));
-        return new PathSet(startPos, newNodes);
+        return new PathSet(newNodes);
     }
 
     public PathSet addEdge(BlockPos from, BlockPos to) {
@@ -121,7 +117,7 @@ public class PathSet {
                 newNodes.add(node);
             }
         }
-        return new PathSet(startPos, newNodes);
+        return new PathSet(newNodes);
     }
 
     public List<BlockPos> getNext(BlockPos pos) {
@@ -148,10 +144,10 @@ public class PathSet {
     }
 
     public PathSet removeNode(BlockPos pos) {
-        if (pos.equals(startPos)) {
+        if (!map.containsKey(pos)) {
             return this;
         }
-        if (!map.containsKey(pos)) {
+        if (getParent(pos).isEmpty()) {
             return this;
         }
         List<PathNode> newNodes = new ArrayList<>();
@@ -170,7 +166,7 @@ public class PathSet {
         if (newNodes.isEmpty()) {
             return null;
         }
-        return new PathSet(startPos, newNodes);
+        return new PathSet(newNodes);
     }
 
     public PathSet addAction(BlockPos pos, IAction action) {
@@ -187,7 +183,7 @@ public class PathSet {
                 newNodes.add(node);
             }
         }
-        return new PathSet(startPos, newNodes);
+        return new PathSet(newNodes);
     }
 
     public PathSet setActions(BlockPos pos, List<IAction> actions) {
@@ -202,19 +198,19 @@ public class PathSet {
                 newNodes.add(node);
             }
         }
-        return new PathSet(startPos, newNodes);
+        return new PathSet(newNodes);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != PathSet.class) return false;
         PathSet other = (PathSet) obj;
-        return this.startPos.equals(other.startPos) && this.nodes.equals(other.nodes);
+        return this.nodes.equals(other.nodes);
     }
 
     @Override
     public int hashCode() {
-        return startPos.hashCode() ^ nodes.hashCode();
+        return nodes.hashCode();
     }
 
     public PathNode getNode(BlockPos nextPos) {

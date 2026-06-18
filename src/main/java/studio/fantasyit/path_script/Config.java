@@ -20,11 +20,11 @@ public class Config {
     static final ModConfigSpec SPEC = BUILDER.build();
 
     public static double teleportMaxDistance;
-    public static double teleportClearDistance;
+    public static double clearDistance;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         teleportMaxDistance = TELEPORT_MAX_DISTANCE.get();
-        teleportClearDistance = TELEPORT_CLEAR_DISTANCE.get();
+        clearDistance = TELEPORT_CLEAR_DISTANCE.get();
     }
 }

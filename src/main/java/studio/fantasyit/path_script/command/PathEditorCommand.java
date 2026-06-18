@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.neoforged.fml.common.EventBusSubscriber;
 import studio.fantasyit.path_script.action.MessageAction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,9 +17,8 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.item.PathEditorItem;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
-
+@EventBusSubscriber
 public class PathEditorCommand {
-
     @SubscribeEvent
     public static void register(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();

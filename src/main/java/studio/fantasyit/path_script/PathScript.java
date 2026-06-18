@@ -34,8 +34,5 @@ public class PathScript {
         AttachmentRegistry.register(modEventBus);
         ActionManager.init();
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        NeoForge.EVENT_BUS.register(PathEditorCommand.class);
-        NeoForge.EVENT_BUS.register(ServerTickHandler.class);
-        NeoForge.EVENT_BUS.register(AnvilHandler.class);
     }
 }

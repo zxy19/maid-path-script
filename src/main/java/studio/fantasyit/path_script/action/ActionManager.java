@@ -37,7 +37,8 @@ public class ActionManager {
 
     public static void init() {
         register(MessageAction.ID, MessageAction.CODEC, MessageAction.STREAM_CODEC, Component.translatable("action.path_script.message"));
-        register(LabelAction.ID, LabelAction.CODEC, LabelAction.STREAM_CODEC,Component.translatable("action.path_script.label"));
+        register(LabelAction.ID, LabelAction.CODEC, LabelAction.STREAM_CODEC, Component.translatable("action.path_script.label"));
         register(IconAction.ID, IconAction.CODEC, IconAction.STREAM_CODEC, Component.translatable("action.path_script.icon"));
+        register(SoundAction.ID, SoundAction.CODEC, STREAM_CODEC, Component.translatable("action.path_script.sound"));
     }
 }

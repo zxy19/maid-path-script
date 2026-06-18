@@ -2,12 +2,14 @@ package studio.fantasyit.path_script.event;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.item.GuideSignItem;
 import studio.fantasyit.path_script.item.PathEditorItem;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 
+@EventBusSubscriber
 public class AnvilHandler {
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
