@@ -3,6 +3,7 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -49,6 +50,9 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
         if (nearest.pos().distSqr(owner.blockPosition()) > clearDist * clearDist) {
             maid.getBrain().eraseMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
             maid.getBrain().eraseMemory(MemoryModuleRegistry.NEXT_NODE.get());
+            if (owner instanceof ServerPlayer player) {
+                BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
+            }
             return;
         }
 
@@ -56,5 +60,8 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
         maid.teleportTo(target.getCenter().x(), target.getCenter().y(), target.getCenter().z());
         MemoryUtil.setCurrentNode(maid, target);
         BehaviorUtils.setWalkAndLookTargetMemories(maid, target, 0.5f, 1);
+        if (owner instanceof ServerPlayer player) {
+            BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
+        }
     }
 }

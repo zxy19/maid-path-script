@@ -3,7 +3,9 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
@@ -11,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.MaidPathScriptTask;
+import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
@@ -95,6 +98,20 @@ public class BehaviorAndConditions {
         marker.pathIndicatorLast = marker.pathIndicator;
         marker.pathIndicator = newIndicator;
         player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
+    }
+
+    public static void clearClientMarkerIfInvalid(ServerPlayer player, ServerLevel level) {
+        PathMarker marker = player.getData(AttachmentRegistry.CLI_MARKER.get());
+        if (marker.pathingMaidEntity == null) return;
+
+        Entity entity = level.getEntity(marker.pathingMaidEntity);
+        if (!(entity instanceof EntityMaid maid) || !maid.isAlive()) {
+            player.setData(AttachmentRegistry.CLI_MARKER.get(), new PathMarker());
+            return;
+        }
+        if (!maid.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
+            player.setData(AttachmentRegistry.CLI_MARKER.get(), new PathMarker());
+        }
     }
 
     public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player) {

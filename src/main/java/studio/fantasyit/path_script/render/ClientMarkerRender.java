@@ -80,11 +80,11 @@ public class ClientMarkerRender {
 
         long mills = Util.getMillis();
         if ((mills / 50) % 2 != 0) return;
-        renderPath(marker.pathIndicator, mills, mc, 0xaa4400);
-        renderPath(marker.pathIndicatorLast, mills, mc, 0xaa4400);
+        renderPath(marker.pathIndicator, mills, mc, 0x99FFCC);
+        renderPath(marker.pathIndicatorLast, mills, mc, 0x99FFCC);
 
         for (BlockPos pos : marker.selectionPos) {
-            renderPath(marker.lastUpdatedNode, pos, mills, mc, 0x99FFCC);
+            renderPath(marker.lastUpdatedNode, pos, mills, mc, 0xFFFF99);
         }
     }
 

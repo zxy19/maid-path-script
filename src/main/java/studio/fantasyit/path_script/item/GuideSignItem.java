@@ -7,6 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -64,6 +65,8 @@ public class GuideSignItem extends Item {
                 }
             });
             player.setData(AttachmentRegistry.GUIDE_MAID, Optional.empty());
+            if (player instanceof ServerPlayer pl && level instanceof ServerLevel sl)
+                BehaviorAndConditions.clearClientMarkerIfInvalid(pl, sl);
         } else {
             EntityMaid maid = EntityMaid.TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
             if (maid == null) {

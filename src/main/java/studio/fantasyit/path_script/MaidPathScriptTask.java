@@ -29,7 +29,7 @@ public class MaidPathScriptTask implements IMaidTask {
     public @Nullable SoundEvent getAmbientSound(EntityMaid maid) {
         return null;
     }
-
+//TODO pickup entity
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
         return new ArrayList<>(List.of(

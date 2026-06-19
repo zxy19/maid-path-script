@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import studio.fantasyit.path_script.data.PathMarker;
+import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.memory.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
@@ -21,13 +21,7 @@ public class ServerTickHandler {
         if (event.getLevel().isClientSide()) return;
         ServerLevel level = (ServerLevel) event.getLevel();
         for (ServerPlayer player : level.players()) {
-            PathMarker marker = player.getData(AttachmentRegistry.CLI_MARKER.get());
-            if (marker.pathingMaidEntity != null) {
-                Entity entity = level.getEntity(marker.pathingMaidEntity);
-                if (entity == null || !entity.isAlive()) {
-                    player.setData(AttachmentRegistry.CLI_MARKER.get(), new PathMarker());
-                }
-            }
+            BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
 
             Optional<UUID> guideUuid = player.getData(AttachmentRegistry.GUIDE_MAID.get());
             guideUuid.ifPresent(uuid -> {
