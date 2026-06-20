@@ -1,4 +1,4 @@
-package studio.fantasyit.path_script.memory;
+package studio.fantasyit.path_script.util;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;

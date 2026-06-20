@@ -6,12 +6,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.Config;
+import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
+import studio.fantasyit.path_script.util.MarkUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
+import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
 
 import java.util.Map;
@@ -29,7 +31,7 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, EntityMaid maid) {
         LivingEntity owner = maid.getOwner();
-        if (owner == null || owner.level() != maid.level()) return false;
+        if (owner == null || owner.level() != maid.level()) return true;
         Optional<PathSet> path = MemoryUtil.getPathSet(maid);
         if (path.isEmpty()) return false;
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
@@ -41,27 +43,30 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
     @Override
     protected void start(ServerLevel level, EntityMaid maid, long timestamp) {
         LivingEntity owner = maid.getOwner();
-        if (owner == null) return;
+        if (owner == null || owner.level() != maid.level()) {
+            maid.getBrain().eraseMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
+            maid.getBrain().eraseMemory(MemoryModuleRegistry.NEXT_NODE.get());
+            return;
+        }
         Optional<PathSet> path = MemoryUtil.getPathSet(maid);
         if (path.isEmpty()) return;
 
         PathNode nearest = path.get().getNearest(owner.blockPosition());
         double clearDist = Config.clearDistance;
         if (nearest.pos().distSqr(owner.blockPosition()) > clearDist * clearDist) {
-            maid.getBrain().eraseMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
-            maid.getBrain().eraseMemory(MemoryModuleRegistry.NEXT_NODE.get());
-            if (owner instanceof ServerPlayer player) {
-                BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
+            MarkUtil.clearMarker(owner);
+            if (owner.hasData(AttachmentRegistry.GUIDE_MAID) && owner.getData(AttachmentRegistry.GUIDE_MAID).map(t -> t.equals(maid.getUUID())).orElse(false)) {
+                maid.discard();
+            } else {
+                maid.getBrain().eraseMemory(MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get());
+                maid.getBrain().eraseMemory(MemoryModuleRegistry.NEXT_NODE.get());
             }
             return;
         }
 
         BlockPos target = nearest.pos();
         maid.teleportTo(target.getCenter().x(), target.getCenter().y(), target.getCenter().z());
-        MemoryUtil.setCurrentNode(maid, target);
-        BehaviorUtils.setWalkAndLookTargetMemories(maid, target, 0.5f, 1);
-        if (owner instanceof ServerPlayer player) {
-            BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
-        }
+        MarkUtil.resetMarker(owner);
+        BehaviorAndConditions.switchNodeTo(maid, nearest, path.get());
     }
 }

@@ -3,15 +3,12 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import studio.fantasyit.path_script.action.IAction;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
 
 import java.util.Map;
@@ -54,14 +51,6 @@ public class MaidSwitchPathNode extends Behavior<EntityMaid> {
         PathNode node = path.get().getNode(pos);
         if (node == null) return;
 
-        if (owner instanceof ServerPlayer sp)
-            for (IAction n : node.actions())
-                n.onSwitchTo(sp, maid, pos);
-
-        MemoryUtil.setCurrentNode(maid, pos);
-        maid.setHomeTo(pos, maid.getHomeRadius());
-        maid.getSchedulePos().setWorkPos(pos);
-        BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, 0.5f, 1);
-        BehaviorAndConditions.updatePathMarker(maid, owner, path.get(), pos);
+        BehaviorAndConditions.switchNodeTo(maid, node, path.get());
     }
 }

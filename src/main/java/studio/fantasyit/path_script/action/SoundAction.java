@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -48,6 +49,7 @@ public record SoundAction(Identifier soundId, float volume, float pitch) impleme
     @Override
     public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
         if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.connection.send(new ClientboundStopSoundPacket(null, SoundSource.VOICE));
             SoundEvent sound = SoundEvent.createVariableRangeEvent(soundId);
             Holder<SoundEvent> holder = BuiltInRegistries.SOUND_EVENT.wrapAsHolder(sound);
             serverPlayer.connection.send(

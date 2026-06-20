@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
 
 import java.util.Map;

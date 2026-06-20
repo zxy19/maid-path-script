@@ -1,0 +1,6 @@
+{
+  "welcome": {
+    "sounds": ["path_script:welcome"],
+    "subtitle": "welcome"
+  }
+}

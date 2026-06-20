@@ -3,24 +3,26 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.MaidPathScriptTask;
-import studio.fantasyit.path_script.PathScript;
+import studio.fantasyit.path_script.action.IAction;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
+import studio.fantasyit.path_script.util.MarkUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -78,41 +80,6 @@ public class BehaviorAndConditions {
         return !node.next().isEmpty();
     }
 
-    public static void updatePathMarker(EntityMaid maid, LivingEntity owner, PathSet pathSet, BlockPos currentNode) {
-        if (!(owner instanceof ServerPlayer player)) return;
-
-        PathMarker marker = player.getData(AttachmentRegistry.CLI_MARKER.get());
-        marker.pathingMaidEntity = maid.getUUID();
-        marker.lastUpdatedNode = currentNode;
-        marker.tip.clear();
-        marker.selectionPos.clear();
-        marker.currentShowingTip = Component.empty();
-
-        Path path = maid.getNavigation().createPath(currentNode, 0);
-        List<BlockPos> newIndicator = new ArrayList<>();
-        if (path != null) {
-            for (int i = 0; i < path.getNodeCount(); i++) {
-                newIndicator.add(path.getNodePos(i));
-            }
-        }
-        marker.pathIndicatorLast = marker.pathIndicator;
-        marker.pathIndicator = newIndicator;
-        player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
-    }
-
-    public static void clearClientMarkerIfInvalid(ServerPlayer player, ServerLevel level) {
-        PathMarker marker = player.getData(AttachmentRegistry.CLI_MARKER.get());
-        if (marker.pathingMaidEntity == null) return;
-
-        Entity entity = level.getEntity(marker.pathingMaidEntity);
-        if (!(entity instanceof EntityMaid maid) || !maid.isAlive()) {
-            player.setData(AttachmentRegistry.CLI_MARKER.get(), new PathMarker());
-            return;
-        }
-        if (!maid.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
-            player.setData(AttachmentRegistry.CLI_MARKER.get(), new PathMarker());
-        }
-    }
 
     public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player) {
         PathNode node = pathSet.getNearest(player.blockPosition());
@@ -129,9 +96,26 @@ public class BehaviorAndConditions {
         MemoryUtil.setPathSet(maid, pathSet);
         MemoryUtil.setCurrentNode(maid, node.pos());
         Vec3 center = node.pos().getCenter();
-        maid.teleportTo(center.x, center.y, center.z);
-        maid.setHomeTo(node.pos(), maid.getHomeRadius());
-        maid.getSchedulePos().setWorkPos(node.pos());
+        maid.invulnerableTime = 5;
+        maid.teleportTo(center.x, center.y - 0.5, center.z);
+        maid.fallDistance = 0;
+        maid.setOnGround(true);
         maid.getNavigationManager().resetNavigation();
+        maid.level().getServer().schedule(new TickTask(1, () ->
+                switchNodeTo(maid, node, pathSet)));
+    }
+
+    public static void switchNodeTo(EntityMaid maid, PathNode node, PathSet path) {
+        BlockPos pos = node.pos();
+        LivingEntity owner = maid.getOwner();
+        if (owner instanceof ServerPlayer sp)
+            for (IAction n : node.actions())
+                n.onSwitchTo(sp, maid, pos);
+
+        MemoryUtil.setCurrentNode(maid, pos);
+        maid.setHomeTo(pos, maid.getHomeRadius());
+        maid.getSchedulePos().setWorkPos(pos);
+        BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, 0.5f, 1);
+        MarkUtil.updatePathMarker(maid, owner, path, pos);
     }
 }

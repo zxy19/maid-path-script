@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -19,11 +20,18 @@ public class PathMarker {
     public List<BlockPos> pathIndicatorLast = new ArrayList<>();
 
     public Component currentShowingTip = Component.empty();
-    public List<Pair<Component, BlockPos>> tip = new ArrayList<>();
     public List<BlockPos> selectionPos = new ArrayList<>();
+
+    public List<Pair<Component, BlockPos>> tip = new ArrayList<>();
+    public List<Pair<List<ItemStack>, BlockPos>> icons = new ArrayList<>();
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Pair<Component, BlockPos>> TIP_STREAM_CODEC = StreamCodec.composite(
             ComponentSerialization.STREAM_CODEC, Pair::getFirst,
+            BlockPos.STREAM_CODEC, Pair::getSecond,
+            Pair::of
+    );
+    private static final StreamCodec<RegistryFriendlyByteBuf, Pair<List<ItemStack>, BlockPos>> ICON_STREAM_CODEC = StreamCodec.composite(
+            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), Pair::getFirst,
             BlockPos.STREAM_CODEC, Pair::getSecond,
             Pair::of
     );
@@ -41,15 +49,18 @@ public class PathMarker {
             m -> m.currentShowingTip,
             TIP_STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.tip,
+            ICON_STREAM_CODEC.apply(ByteBufCodecs.list()),
+            m -> m.icons,
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.selectionPos,
-            (lastUpdated, uuid, blocks, blocksLast, component, tips, selection) -> {
+            (lastUpdated, uuid, blocks, blocksLast, component, tips, icons, selection) -> {
                 var pm = new PathMarker();
                 pm.lastUpdatedNode = lastUpdated;
                 pm.pathingMaidEntity = uuid.orElse(null);
                 pm.pathIndicator = blocks;
                 pm.pathIndicatorLast = blocksLast;
                 pm.tip = tips;
+                pm.icons = icons;
                 pm.currentShowingTip = component;
                 pm.selectionPos = selection;
                 return pm;
@@ -64,6 +75,8 @@ public class PathMarker {
         hash = 97 * hash + Objects.hashCode(this.pathIndicatorLast);
         hash = 97 * hash + Objects.hashCode(this.tip);
         hash = 97 * hash + Objects.hashCode(this.currentShowingTip);
+        hash = 97 * hash + Objects.hashCode(this.selectionPos);
+        hash = 97 * hash + Objects.hashCode(this.icons);
         return hash;
     }
 
@@ -77,6 +90,8 @@ public class PathMarker {
         if (!Objects.equals(this.pathIndicatorLast, other.pathIndicatorLast)) return false;
         if (!Objects.equals(this.currentShowingTip, other.currentShowingTip)) return false;
         if (!Objects.equals(this.tip, other.tip)) return false;
+        if (!Objects.equals(this.selectionPos, other.selectionPos)) return false;
+        if (!Objects.equals(this.icons, other.icons)) return false;
         return true;
     }
 }

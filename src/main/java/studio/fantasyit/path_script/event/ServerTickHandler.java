@@ -1,4 +1,4 @@
-package studio.fantasyit.path_script;
+package studio.fantasyit.path_script.event;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
@@ -7,10 +7,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
+import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.memory.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
+import studio.fantasyit.path_script.util.MarkUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,8 +22,7 @@ public class ServerTickHandler {
         if (event.getLevel().isClientSide()) return;
         ServerLevel level = (ServerLevel) event.getLevel();
         for (ServerPlayer player : level.players()) {
-            BehaviorAndConditions.clearClientMarkerIfInvalid(player, level);
-
+            MarkUtil.clearClientMarkerIfInvalid(player, level);
             Optional<UUID> guideUuid = player.getData(AttachmentRegistry.GUIDE_MAID.get());
             guideUuid.ifPresent(uuid -> {
                 Entity entity = level.getEntity(uuid);

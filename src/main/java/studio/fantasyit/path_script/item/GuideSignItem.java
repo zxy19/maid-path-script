@@ -7,7 +7,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -22,6 +21,7 @@ import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
+import studio.fantasyit.path_script.util.MarkUtil;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -65,8 +65,7 @@ public class GuideSignItem extends Item {
                 }
             });
             player.setData(AttachmentRegistry.GUIDE_MAID, Optional.empty());
-            if (player instanceof ServerPlayer pl && level instanceof ServerLevel sl)
-                BehaviorAndConditions.clearClientMarkerIfInvalid(pl, sl);
+            MarkUtil.clearMarker(player);
         } else {
             EntityMaid maid = EntityMaid.TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
             if (maid == null) {
