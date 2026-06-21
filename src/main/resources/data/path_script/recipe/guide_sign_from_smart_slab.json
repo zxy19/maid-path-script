@@ -1,0 +1,8 @@
+{
+  "type": "path_script:guide_sign_transfer",
+  "source": "touhou_little_maid:smart_slab_has_maid",
+  "result": {
+    "id": "path_script:guide_sign",
+    "count": 1
+  }
+}

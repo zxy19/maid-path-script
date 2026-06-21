@@ -1,0 +1,8 @@
+{
+  "type": "path_script:guide_sign_transfer",
+  "source": "path_script:path_editor",
+  "result": {
+    "id": "path_script:guide_sign",
+    "count": 1
+  }
+}

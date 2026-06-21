@@ -1,3 +1,5 @@
-// 26.1.2	2026-06-16T01:45:29.9033219	Model Definitions - path_script
+// 26.1.2	2026-06-22T02:35:10.3367528	Model Definitions - path_script
+88d95bc4cff07b3762808b348efd4029bb684998 assets/path_script/items/guide_sign.json
 36407729e806c8d49f7839d04e68b218afb8a3f3 assets/path_script/items/path_editor.json
+edb3851761e23346c95b49a091b55cbf6107ac7c assets/path_script/models/item/guide_sign.json
 9186aec3aa11a45a2b24103e84126c200f2ac5c2 assets/path_script/models/item/path_editor.json
