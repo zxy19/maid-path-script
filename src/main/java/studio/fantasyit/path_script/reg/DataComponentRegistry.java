@@ -3,6 +3,7 @@ package studio.fantasyit.path_script.reg;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -23,6 +24,12 @@ public class DataComponentRegistry {
             = REGISTER.register("path_set", () -> DataComponentType.<PathSet>builder()
             .persistent(PathSet.CODEC)
             .networkSynchronized(PathSet.STREAM_CODEC)
+            .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>> STORED_MAID
+            = REGISTER.register("stored_maid", () -> DataComponentType.<CustomData>builder()
+            .persistent(CustomData.CODEC)
+            .networkSynchronized(CustomData.STREAM_CODEC)
             .build());
 
     public static void register(IEventBus eventBus) {

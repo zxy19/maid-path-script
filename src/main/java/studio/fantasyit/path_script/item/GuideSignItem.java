@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
+import studio.fantasyit.path_script.util.MaidCreatorUtil;
 import studio.fantasyit.path_script.util.MarkUtil;
 
 import java.util.Optional;
@@ -67,11 +69,15 @@ public class GuideSignItem extends Item {
             player.setData(AttachmentRegistry.GUIDE_MAID, Optional.empty());
             MarkUtil.clearMarker(player);
         } else {
+            CustomData storedMaid = stack.get(DataComponentRegistry.STORED_MAID.get());
             EntityMaid maid = EntityMaid.TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
             if (maid == null) {
                 return InteractionResult.FAIL;
             }
             maid.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.SPAWN_ITEM_USE, null);
+            if (storedMaid != null) {
+                MaidCreatorUtil.loadMaid(maid, storedMaid, player);
+            }
             level.addFreshEntity(maid);
             level.getServer().schedule(new TickTask(1, () -> {
                 player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));

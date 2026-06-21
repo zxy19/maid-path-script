@@ -10,12 +10,12 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.config.ModConfig;
 import studio.fantasyit.path_script.action.ActionManager;
 import studio.fantasyit.path_script.command.PathEditorCommand;
-import studio.fantasyit.path_script.event.AnvilHandler;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.CreativeTabRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
 import studio.fantasyit.path_script.reg.ItemRegistry;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
+import studio.fantasyit.path_script.reg.RecipeRegistry;
 
 @Mod(PathScript.MODID)
 public class PathScript {
@@ -31,6 +31,7 @@ public class PathScript {
         DataComponentRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
+        RecipeRegistry.register(modEventBus);
         AttachmentRegistry.register(modEventBus);
         ActionManager.init();
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
