@@ -91,6 +91,8 @@ public class BehaviorAndConditions {
             return;
         }
 
+        player.sendSystemMessage(Component.translatable("item.path_script.path_editor.maid_set",
+                maid.getDisplayName(), node.pos().toShortString()));
         maid.setHomeModeEnable(true);
         maid.getTaskManager().setTask(new MaidPathScriptTask());
         MemoryUtil.setPathSet(maid, pathSet);

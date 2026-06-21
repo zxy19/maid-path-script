@@ -1,22 +1,35 @@
 package studio.fantasyit.path_script.render;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.data.PathMarker;
+import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
+import studio.fantasyit.path_script.reg.DataComponentRegistry;
+import studio.fantasyit.path_script.reg.ItemRegistry;
+import studio.fantasyit.path_script.util.MarkUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -32,19 +45,25 @@ public class ClientMarkerRender {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
-        PathMarker marker = mc.player.getExistingDataOrNull(AttachmentRegistry.CLI_MARKER.get());
-        if (marker == null) return;
-
         var poseStack = event.getPoseStack();
         var submitNodeCollector = event.getSubmitNodeCollector();
         var camera = event.getLevelRenderState().cameraRenderState;
         Map<BlockPos, Integer> floating = new ConcurrentHashMap<>();
 
-        for (Pair<Component, BlockPos> pair : marker.tip) {
-            Component text = pair.getFirst();
-            BlockPos pos = pair.getSecond();
-            BoxRenderUtil.renderStorage(pos, COLOR_NULL, poseStack, submitNodeCollector, camera, text, floating);
+        PathMarker marker = mc.player.getExistingDataOrNull(AttachmentRegistry.CLI_MARKER.get());
+        if (marker == null) {
+            ItemStack mainHandItem = mc.player.getMainHandItem();
+            if (mainHandItem.is(ItemRegistry.GUIDE_SIGN) && mainHandItem.has(DataComponentRegistry.PATH_SET)) {
+                PathSet data = mainHandItem.get(DataComponentRegistry.PATH_SET);
+                PathMarker pm = new PathMarker();
+                MarkUtil.setupMarkerFor(pm, data);
+                renderLabelAndMarks(pm, mc.player, poseStack, submitNodeCollector, camera, floating);
+            }
+            return;
         }
+
+
+        renderLabelAndMarks(marker, mc.player, poseStack, submitNodeCollector, camera, floating);
         for (BlockPos pos : marker.selectionPos) {
             BoxRenderUtil.renderStorage(pos, COLOR_MARKER, poseStack, submitNodeCollector, camera, Component.translatable("path.next_step"), floating);
         }
@@ -70,6 +89,35 @@ public class ClientMarkerRender {
         }
     }
 
+    private static void renderLabelAndMarks(PathMarker marker, LocalPlayer player, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, Map<BlockPos, Integer> floating) {
+        for (Pair<Component, BlockPos> pair : marker.tip) {
+            Component text = pair.getFirst();
+            BlockPos pos = pair.getSecond();
+            if (marker.selectionPos.contains(pos) || pos.distToCenterSqr(player.position()) < Config.distanceToShowMarks * Config.distanceToShowMarks) {
+                BoxRenderUtil.renderStorage(pos, COLOR_NULL, poseStack, submitNodeCollector, camera, text, floating);
+            }
+        }
+
+        for (Pair<List<ItemStack>, BlockPos> pair : marker.icons) {
+            List<ItemStack> icons = pair.getFirst();
+            if (icons.isEmpty()) continue;
+            ItemStack icon = icons.get((player.tickCount / 10) % icons.size());
+            BlockPos pos = pair.getSecond();
+            if (marker.selectionPos.contains(pos) || pos.distToCenterSqr(player.position()) < Config.distanceToShowMarks * Config.distanceToShowMarks) {
+                poseStack.pushPose();
+                poseStack.translate(pos.getCenter().subtract(camera.pos));
+                poseStack.translate(0, 0.7f + floating.getOrDefault(pos, 0) * 0.3f, 0);
+                poseStack.scale(0.4f, 0.4f, 0.4f);
+                poseStack.mulPose(Axis.YP.rotationDegrees(player.tickCount * 3));
+                int lightCoords = LevelRenderer.getLightCoords(player.level(), pos);
+                ItemStackRenderState state = new ItemStackRenderState();
+                Minecraft.getInstance().getItemModelResolver().appendItemLayers(state, icon, ItemDisplayContext.NONE, player.level(), player, 0);
+                state.submit(poseStack, submitNodeCollector, lightCoords, 0, 0);
+                poseStack.popPose();
+                floating.put(pos, floating.getOrDefault(pos, 0) + 2);
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void levelTick(net.neoforged.neoforge.event.tick.LevelTickEvent.Pre event) {

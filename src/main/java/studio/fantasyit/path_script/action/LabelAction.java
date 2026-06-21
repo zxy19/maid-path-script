@@ -35,6 +35,11 @@ public record LabelAction(String message) implements IAction {
     }
 
     @Override
+    public Component getWorldDisplayComponent() {
+        return Component.literal(message);
+    }
+
+    @Override
     public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
         player.sendSystemMessage(Component.literal(message));
     }

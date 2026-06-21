@@ -17,14 +17,20 @@ public class Config {
             .comment("If owner is farther than this distance from ALL path nodes, clear the path data instead of teleporting")
             .defineInRange("teleport.clear_distance", 10.0, 1.0, 1024.0);
 
+    private static final ModConfigSpec.DoubleValue DISTANCE_TO_SHOW_MARKS = BUILDER
+            .comment("Distance to show marks")
+            .defineInRange("distance to show marks", 64.0, 1.0, 1024.0);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     public static double teleportMaxDistance;
     public static double clearDistance;
+    public static double distanceToShowMarks;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         teleportMaxDistance = TELEPORT_MAX_DISTANCE.get();
         clearDistance = TELEPORT_CLEAR_DISTANCE.get();
+        distanceToShowMarks = DISTANCE_TO_SHOW_MARKS.get();
     }
 }

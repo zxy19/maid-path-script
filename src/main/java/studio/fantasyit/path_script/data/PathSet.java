@@ -201,6 +201,8 @@ public class PathSet {
         return new PathSet(newNodes);
     }
 
+
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != PathSet.class) return false;

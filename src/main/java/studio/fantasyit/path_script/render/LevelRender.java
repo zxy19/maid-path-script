@@ -47,7 +47,7 @@ public class LevelRender {
         float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
         Map<BlockPos, Integer> floating = new ConcurrentHashMap<>();
         renderForRequest(poseStack, submitNodeCollector, camera, partialTick, mc, floating);
-        renderDebug(poseStack, submitNodeCollector, camera, partialTick, mc, floating);
+//        renderDebug(poseStack, submitNodeCollector, camera, partialTick, mc, floating);
     }
 
     private static void renderDebug(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, float partialTick, Minecraft mc, Map<BlockPos, Integer> floating) {
@@ -88,7 +88,7 @@ public class LevelRender {
                 }
 
                 for (IAction action : node.actions()) {
-                    Component actionLabel = action.getDisplayComponent();
+                    Component actionLabel = action.getWorldDisplayComponent();
                     Vec3 from = node.pos().getCenter().add(0, 0.7f, 0);
                     BoxRenderUtil.drawText(poseStack, mc, camera, submitNodeCollector, from, actionLabel, 0xffaaaaaa, floating.getOrDefault(node.pos(), 0) * 0.3f);
                     floating.put(node.pos(), floating.getOrDefault(node.pos(), 0) + 1);

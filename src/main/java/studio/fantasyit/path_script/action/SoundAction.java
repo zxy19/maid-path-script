@@ -47,6 +47,11 @@ public record SoundAction(Identifier soundId, float volume, float pitch) impleme
     }
 
     @Override
+    public Component getWorldDisplayComponent() {
+        return Component.literal(soundId.toString());
+    }
+
+    @Override
     public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.connection.send(new ClientboundStopSoundPacket(null, SoundSource.VOICE));

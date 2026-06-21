@@ -76,6 +76,8 @@ public class GuideSignItem extends Item {
             level.getServer().schedule(new TickTask(1, () -> {
                 player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
                 BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
+                player.sendSystemMessage(Component.translatable("item.path_script.guide_sign.maid_created",
+                        pathSet.getNearest(player.blockPosition()).pos().toShortString()));
             }));
         }
         return InteractionResult.SUCCESS;

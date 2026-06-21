@@ -92,8 +92,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
-    compileOnly 'com.github.TouhouLittleMaid:TouhouLittleMaid-26.1:master-SNAPSHOT'
-    runtimeOnly 'com.github.TouhouLittleMaid:TouhouLittleMaid-26.1:master-SNAPSHOT'
+    compileOnly 'com.github.TouhouLittleMaid:TouhouLittleMaid-26.1:7c11c1d0a4'
+    runtimeOnly 'com.github.TouhouLittleMaid:TouhouLittleMaid-26.1:7c11c1d0a4'
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

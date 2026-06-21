@@ -38,4 +38,12 @@ public record IconAction(List<ItemStack> markers) implements IAction {
             d = markers.get((int) (l % markers.size())).getHoverName();
         return Component.translatable("action.path_script.icon", d);
     }
+
+    @Override
+    public Component getWorldDisplayComponent() {
+        long l = Util.getMillis() / 1000;
+        if (!markers.isEmpty())
+            return markers.get((int) (l % markers.size())).getHoverName();
+        return Component.literal("?");
+    }
 }

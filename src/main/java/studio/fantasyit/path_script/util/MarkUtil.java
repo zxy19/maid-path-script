@@ -85,15 +85,19 @@ public class MarkUtil {
 
     public static void setupMarkerFor(PathMarker marker, UUID uuid, PathSet path) {
         if (marker.pathingMaidEntity == null || !marker.pathingMaidEntity.equals(uuid)) {
-            for (PathNode n : path.getNodes()) {
-                for (IAction a : n.actions()) {
-                    if (a instanceof LabelAction(String message))
-                        marker.tip.add(new Pair<>(Component.literal(message), n.pos()));
-                    if (a instanceof IconAction(List<net.minecraft.world.item.ItemStack> markers))
-                        marker.icons.add(new Pair<>(markers, n.pos()));
-                }
-            }
+            setupMarkerFor(marker, path);
             marker.pathingMaidEntity = uuid;
+        }
+    }
+
+    public static void setupMarkerFor(PathMarker marker, PathSet path) {
+        for (PathNode n : path.getNodes()) {
+            for (IAction a : n.actions()) {
+                if (a instanceof LabelAction(String message))
+                    marker.tip.add(new Pair<>(Component.literal(message), n.pos()));
+                if (a instanceof IconAction(List<net.minecraft.world.item.ItemStack> markers))
+                    marker.icons.add(new Pair<>(markers, n.pos()));
+            }
         }
     }
 }

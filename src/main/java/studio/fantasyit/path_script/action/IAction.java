@@ -11,6 +11,10 @@ public interface IAction {
 
     Component getDisplayComponent();
 
+    default Component getWorldDisplayComponent() {
+        return getDisplayComponent();
+    }
+
     default void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
     }
 }
