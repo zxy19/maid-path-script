@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import studio.fantasyit.path_script.Config;
+import studio.fantasyit.path_script.data.BeamRenderData;
 import studio.fantasyit.path_script.data.PathMarker;
+import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
@@ -117,17 +120,50 @@ public class ClientMarkerRender {
                 floating.put(pos, floating.getOrDefault(pos, 0) + 2);
             }
         }
+
+        for (BeamRenderData beam : marker.beams) {
+            if (marker.selectionPos.contains(beam.pos()) || beam.pos().distToCenterSqr(player.position()) < Config.distanceToShowMarks * Config.distanceToShowMarks) {
+                float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
+                float animationTime = (player.level().getGameTime() % 40) + partialTick;
+                Vec3 offset = Vec3.atLowerCornerOf(beam.pos()).subtract(camera.pos);
+                poseStack.pushPose();
+                poseStack.translate(offset.x, offset.y, offset.z);
+                BeaconBeamRenderer.submitBeaconBeam(poseStack, submitNodeCollector,
+                        BeaconRenderer.BEAM_LOCATION, 1.0F, animationTime,
+                        0, beam.height(),
+                        beam.color(), beam.glowColor(),
+                        0.2F, 0.25F);
+                poseStack.popPose();
+            }
+        }
     }
 
     @SubscribeEvent
     public static void levelTick(net.neoforged.neoforge.event.tick.LevelTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-        PathMarker marker = mc.player.getExistingDataOrNull(AttachmentRegistry.CLI_MARKER.get());
-        if (marker == null) return;
 
         long mills = Util.getMillis();
         if ((mills / 50) % 2 != 0) return;
+
+        ItemStack mainStack = mc.player.getMainHandItem();
+        if (mainStack.is(ItemRegistry.GUIDE_SIGN) && mainStack.has(DataComponentRegistry.PATH_SET)) {
+            PathSet data = mainStack.get(DataComponentRegistry.PATH_SET);
+            double distSq = Config.distanceToShowMarks * Config.distanceToShowMarks;
+            Vec3 playerPos = mc.player.position();
+            for (PathNode node : data.getNodes()) {
+                if (node.pos().distToCenterSqr(playerPos) < distSq) {
+                    for (BlockPos next : node.next()) {
+                        renderPath(node.pos(), next, mills, mc, 0x99FFCC);
+                    }
+                }
+            }
+            return;
+        }
+
+        PathMarker marker = mc.player.getExistingDataOrNull(AttachmentRegistry.CLI_MARKER.get());
+        if (marker == null) return;
+
         renderPath(marker.pathIndicator, mills, mc, 0x99FFCC);
         renderPath(marker.pathIndicatorLast, mills, mc, 0x99FFCC);
 

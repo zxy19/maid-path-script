@@ -48,6 +48,7 @@ public class ActionEditRegistry {
         register(IconAction.ID, () -> new IconAction(new ArrayList<>()), IconActionEditor::create);
         register(LabelAction.ID, () -> new LabelAction(""), LabelActionEditor::create);
         register(SoundAction.ID, () -> new SoundAction(Identifier.fromNamespaceAndPath("minecraft", "entity.experience_orb.pickup"), 1.0F, 1.0F), SoundActionEditor::create);
+        register(BeaconAction.ID, () -> new BeaconAction(0xFFFFFFFF, 0x20FFFFFF, 256), BeaconActionEditor::create);
     }
 
     private record Entry(Supplier<IAction> defaultFactory, @Nullable ActionEditorFactory editorFactory) {

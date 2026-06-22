@@ -15,6 +15,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import net.minecraft.client.renderer.blockentity.BeaconRenderer;
+import studio.fantasyit.path_script.action.BeaconAction;
 import studio.fantasyit.path_script.action.IAction;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
@@ -88,6 +90,18 @@ public class LevelRender {
                 }
 
                 for (IAction action : node.actions()) {
+                    if (action instanceof BeaconAction beacon) {
+                        float animationTime = (mc.level.getGameTime() % 40) + partialTick;
+                        Vec3 offset = Vec3.atLowerCornerOf(node.pos()).subtract(camera.pos);
+                        poseStack.pushPose();
+                        poseStack.translate(offset.x, offset.y, offset.z);
+                        BeaconBeamRenderer.submitBeaconBeam(poseStack, submitNodeCollector,
+                                BeaconRenderer.BEAM_LOCATION, 1.0F, animationTime,
+                                0, beacon.height(),
+                                beacon.color(), beacon.glowColor(),
+                                0.2F, 0.25F);
+                        poseStack.popPose();
+                    }
                     Component actionLabel = action.getWorldDisplayComponent();
                     Vec3 from = node.pos().getCenter().add(0, 0.7f, 0);
                     BoxRenderUtil.drawText(poseStack, mc, camera, submitNodeCollector, from, actionLabel, 0xffaaaaaa, floating.getOrDefault(node.pos(), 0) * 0.3f);

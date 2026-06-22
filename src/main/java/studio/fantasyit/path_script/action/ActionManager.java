@@ -40,5 +40,6 @@ public class ActionManager {
         register(LabelAction.ID, LabelAction.CODEC, LabelAction.STREAM_CODEC, Component.translatable("action.path_script.label.button"));
         register(IconAction.ID, IconAction.CODEC, IconAction.STREAM_CODEC, Component.translatable("action.path_script.icon.button"));
         register(SoundAction.ID, SoundAction.CODEC, SoundAction.STREAM_CODEC, Component.translatable("action.path_script.sound.button"));
+        register(BeaconAction.ID, BeaconAction.CODEC, BeaconAction.STREAM_CODEC, Component.translatable("action.path_script.beacon.button"));
     }
 }

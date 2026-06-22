@@ -32,6 +32,8 @@
   "item.path_script.path_editor.would_create_cycle": "此连接会产生环路，已阻止。",
   "item.path_script.path_editor.edge_connected": "已连接 %s -> %s。",
   "item.path_script.guide_sign.maid_created": "已创建导游女仆，起点: %s。",
+  "action.path_script.beacon": "§a[B] §f#%08X",
+  "action.path_script.beacon.button": "信标光柱",
   "action.path_script.sound": "§a[S] §f%s",
   "action.path_script.sound.button": "音效",
   "task.path_script.path_navigate": "路径导航",

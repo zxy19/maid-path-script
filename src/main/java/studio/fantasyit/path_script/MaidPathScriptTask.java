@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MaidPathScriptTask implements IMaidTask {
+    public static final Identifier ID = PathScript.id("path_navigate");
+
     @Override
     public Identifier getUid() {
-        return PathScript.id("path_navigate");
+        return ID;
     }
 
     @Override
@@ -29,7 +31,12 @@ public class MaidPathScriptTask implements IMaidTask {
     public @Nullable SoundEvent getAmbientSound(EntityMaid maid) {
         return null;
     }
-//TODO pickup entity
+
+    @Override
+    public boolean canSitInJoy(EntityMaid maid, String joyType) {
+        return false;
+    }
+
     @Override
     public List<Pair<Integer, BehaviorControl<? super EntityMaid>>> createBrainTasks(EntityMaid maid) {
         return new ArrayList<>(List.of(
@@ -38,7 +45,8 @@ public class MaidPathScriptTask implements IMaidTask {
                 Pair.of(1, new MaidContinueMoveBehavior()),
                 Pair.of(2, new MaidSwitchPathNode()),
                 Pair.of(2, new MaidWaitBeforeMultipleSelector()),
-                Pair.of(3, new MaidLeavePathModeBehavior())
+                Pair.of(3, new MaidLeavePathModeBehavior()),
+                Pair.of(4, new MaidWaitOnPathEnd())
         ));
     }
 

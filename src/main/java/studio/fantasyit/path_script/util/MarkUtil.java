@@ -10,9 +10,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.pathfinder.Path;
 import studio.fantasyit.path_script.PathScript;
+import studio.fantasyit.path_script.action.BeaconAction;
 import studio.fantasyit.path_script.action.IAction;
 import studio.fantasyit.path_script.action.IconAction;
 import studio.fantasyit.path_script.action.LabelAction;
+import studio.fantasyit.path_script.data.BeamRenderData;
 import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
@@ -97,6 +99,8 @@ public class MarkUtil {
                     marker.tip.add(new Pair<>(Component.literal(message), n.pos()));
                 if (a instanceof IconAction(List<net.minecraft.world.item.ItemStack> markers))
                     marker.icons.add(new Pair<>(markers, n.pos()));
+                if (a instanceof BeaconAction(var color, var glowColor, var height))
+                    marker.beams.add(new BeamRenderData(n.pos(), color, glowColor, height));
             }
         }
     }

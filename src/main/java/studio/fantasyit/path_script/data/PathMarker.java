@@ -24,6 +24,7 @@ public class PathMarker {
 
     public List<Pair<Component, BlockPos>> tip = new ArrayList<>();
     public List<Pair<List<ItemStack>, BlockPos>> icons = new ArrayList<>();
+    public List<BeamRenderData> beams = new ArrayList<>();
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Pair<Component, BlockPos>> TIP_STREAM_CODEC = StreamCodec.composite(
             ComponentSerialization.STREAM_CODEC, Pair::getFirst,
@@ -53,7 +54,9 @@ public class PathMarker {
             m -> m.icons,
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.selectionPos,
-            (lastUpdated, uuid, blocks, blocksLast, component, tips, icons, selection) -> {
+            BeamRenderData.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            m -> m.beams,
+            (lastUpdated, uuid, blocks, blocksLast, component, tips, icons, selection, beams) -> {
                 var pm = new PathMarker();
                 pm.lastUpdatedNode = lastUpdated;
                 pm.pathingMaidEntity = uuid.orElse(null);
@@ -63,6 +66,7 @@ public class PathMarker {
                 pm.icons = icons;
                 pm.currentShowingTip = component;
                 pm.selectionPos = selection;
+                pm.beams = beams;
                 return pm;
             }
     );
@@ -77,6 +81,7 @@ public class PathMarker {
         hash = 97 * hash + Objects.hashCode(this.currentShowingTip);
         hash = 97 * hash + Objects.hashCode(this.selectionPos);
         hash = 97 * hash + Objects.hashCode(this.icons);
+        hash = 97 * hash + Objects.hashCode(this.beams);
         return hash;
     }
 
@@ -92,6 +97,7 @@ public class PathMarker {
         if (!Objects.equals(this.tip, other.tip)) return false;
         if (!Objects.equals(this.selectionPos, other.selectionPos)) return false;
         if (!Objects.equals(this.icons, other.icons)) return false;
+        if (!Objects.equals(this.beams, other.beams)) return false;
         return true;
     }
 }

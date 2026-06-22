@@ -20,8 +20,8 @@ import studio.fantasyit.path_script.util.MemoryUtil;
 import java.util.Map;
 import java.util.Optional;
 
-public class MaidWaitBeforeMultipleSelector extends Behavior<EntityMaid> {
-    public MaidWaitBeforeMultipleSelector() {
+public class MaidWaitOnPathEnd extends Behavior<EntityMaid> {
+    public MaidWaitOnPathEnd() {
         super(Map.of(
                 MemoryModuleRegistry.CURRENT_PATH_SCRIPT.get(), MemoryStatus.VALUE_PRESENT,
                 MemoryModuleRegistry.NEXT_NODE.get(), MemoryStatus.VALUE_PRESENT
@@ -37,9 +37,7 @@ public class MaidWaitBeforeMultipleSelector extends Behavior<EntityMaid> {
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return false;
         if (maid.distanceToSqr(cur.get().getCenter()) > 4) return false;
-        if (!BehaviorAndConditions.shouldSelectNextForMaid(maid, owner, cur.get(), path.get()))
-            return path.get().getNode(cur.get()).next().size() > 1;
-        return false;
+        return path.get().getNode(cur.get()).next().isEmpty();
     }
 
     @Override
@@ -52,8 +50,7 @@ public class MaidWaitBeforeMultipleSelector extends Behavior<EntityMaid> {
         if (cur.isEmpty()) return;
         MarkUtil.setupMarkerFor(marker, maid.getUUID(), path.get());
         marker.selectionPos.clear();
-        marker.currentShowingTip = Component.translatable("path.wait_before");
-        marker.selectionPos.addAll(path.get().getNode(cur.get()).next());
+        marker.currentShowingTip = Component.translatable("path.end");
         player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
         maid.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(player, true));
         maid.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);

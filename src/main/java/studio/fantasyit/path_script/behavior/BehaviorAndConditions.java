@@ -8,22 +8,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.MaidPathScriptTask;
 import studio.fantasyit.path_script.action.IAction;
-import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.util.MarkUtil;
 import studio.fantasyit.path_script.util.MemoryUtil;
-import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class BehaviorAndConditions {
@@ -33,6 +27,7 @@ public class BehaviorAndConditions {
     public static boolean isOwnerAvailableForMove(EntityMaid maid, LivingEntity owner, BlockPos nextPos, PathSet pathSet) {
         if (pathSet.getNodes().isEmpty()) return false;
         PathNode playerNearest = pathSet.getNearest(owner.blockPosition());
+        if (playerNearest == null) return false;
         if (playerNearest.pos().equals(nextPos)) {
             return true;
         }

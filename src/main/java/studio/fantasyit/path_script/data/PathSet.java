@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.action.IAction;
 
 import java.util.*;
@@ -129,7 +130,13 @@ public class PathSet {
         PathNode nearest = null;
         double nearestDist = Double.MAX_VALUE;
         for (PathNode node : nodes) {
-            double dist = node.pos().distSqr(pos);
+            double dy = node.pos().getY() - pos.getY();
+            if (Math.abs(dy) > Config.yMaxHeight) continue;
+
+            double yWeight = dy >= 0 ? Config.yPositiveWeight : Config.yNegativeWeight;
+            double dx = node.pos().getX() - pos.getX();
+            double dz = node.pos().getZ() - pos.getZ();
+            double dist = dx * dx + dz * dz + (yWeight * dy) * (yWeight * dy);
             if (dist < nearestDist) {
                 nearestDist = dist;
                 nearest = node;

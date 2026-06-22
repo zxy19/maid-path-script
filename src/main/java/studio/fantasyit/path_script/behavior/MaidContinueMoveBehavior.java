@@ -9,9 +9,8 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.util.MarkUtil;
-import studio.fantasyit.path_script.util.MemoryUtil;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
+import studio.fantasyit.path_script.util.MemoryUtil;
 
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +33,7 @@ public class MaidContinueMoveBehavior extends Behavior<EntityMaid> {
         if (path.isEmpty()) return false;
         Optional<BlockPos> cur = MemoryUtil.getCurrentNode(maid);
         if (cur.isEmpty()) return false;
+        if (maid.distanceToSqr(cur.get().getCenter()) < 4) return false;
         return BehaviorAndConditions.isOwnerAvailableForMove(maid, owner, cur.get(), path.get());
     }
 
