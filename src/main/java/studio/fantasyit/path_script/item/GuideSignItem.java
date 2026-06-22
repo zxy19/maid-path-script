@@ -19,6 +19,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
+import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
@@ -82,8 +83,10 @@ public class GuideSignItem extends Item {
             level.getServer().schedule(new TickTask(1, () -> {
                 player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
                 BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
-                player.sendSystemMessage(Component.translatable("item.path_script.guide_sign.maid_created",
-                        pathSet.getNearest(player.blockPosition()).pos().toShortString()));
+                PathMarker data = player.getData(AttachmentRegistry.CLI_MARKER.get());
+                data.pathingMaidEntity = null;
+                MarkUtil.setupMarkerFor(data, maid.getUUID(), pathSet);
+                player.setData(AttachmentRegistry.CLI_MARKER, data);
             }));
         }
         return InteractionResult.SUCCESS;

@@ -87,6 +87,9 @@ public class MarkUtil {
 
     public static void setupMarkerFor(PathMarker marker, UUID uuid, PathSet path) {
         if (marker.pathingMaidEntity == null || !marker.pathingMaidEntity.equals(uuid)) {
+            marker.tip.clear();
+            marker.icons.clear();
+            marker.beams.clear();
             setupMarkerFor(marker, path);
             marker.pathingMaidEntity = uuid;
         }
