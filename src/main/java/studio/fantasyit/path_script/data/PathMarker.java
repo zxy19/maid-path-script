@@ -17,7 +17,6 @@ public class PathMarker {
     public @Nullable UUID pathingMaidEntity;
     public BlockPos lastUpdatedNode = BlockPos.ZERO;
     public List<BlockPos> pathIndicator = new ArrayList<>();
-    public List<BlockPos> pathIndicatorLast = new ArrayList<>();
 
     public Component currentShowingTip = Component.empty();
     public List<BlockPos> selectionPos = new ArrayList<>();
@@ -44,8 +43,6 @@ public class PathMarker {
             m -> Optional.ofNullable(m.pathingMaidEntity),
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.pathIndicator,
-            BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
-            m -> m.pathIndicatorLast,
             ComponentSerialization.STREAM_CODEC,
             m -> m.currentShowingTip,
             TIP_STREAM_CODEC.apply(ByteBufCodecs.list()),
@@ -56,12 +53,11 @@ public class PathMarker {
             m -> m.selectionPos,
             BeamRenderData.STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.beams,
-            (lastUpdated, uuid, blocks, blocksLast, component, tips, icons, selection, beams) -> {
+            (lastUpdated, uuid, blocks, component, tips, icons, selection, beams) -> {
                 var pm = new PathMarker();
                 pm.lastUpdatedNode = lastUpdated;
                 pm.pathingMaidEntity = uuid.orElse(null);
                 pm.pathIndicator = blocks;
-                pm.pathIndicatorLast = blocksLast;
                 pm.tip = tips;
                 pm.icons = icons;
                 pm.currentShowingTip = component;
@@ -76,7 +72,6 @@ public class PathMarker {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.pathingMaidEntity);
         hash = 97 * hash + Objects.hashCode(this.pathIndicator);
-        hash = 97 * hash + Objects.hashCode(this.pathIndicatorLast);
         hash = 97 * hash + Objects.hashCode(this.tip);
         hash = 97 * hash + Objects.hashCode(this.currentShowingTip);
         hash = 97 * hash + Objects.hashCode(this.selectionPos);
@@ -92,7 +87,6 @@ public class PathMarker {
         PathMarker other = (PathMarker) obj;
         if (!Objects.equals(this.pathingMaidEntity, other.pathingMaidEntity)) return false;
         if (!Objects.equals(this.pathIndicator, other.pathIndicator)) return false;
-        if (!Objects.equals(this.pathIndicatorLast, other.pathIndicatorLast)) return false;
         if (!Objects.equals(this.currentShowingTip, other.currentShowingTip)) return false;
         if (!Objects.equals(this.tip, other.tip)) return false;
         if (!Objects.equals(this.selectionPos, other.selectionPos)) return false;

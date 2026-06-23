@@ -19,7 +19,7 @@ public class Config {
 
     private static final ModConfigSpec.DoubleValue TELEPORT_Y_MAX_HEIGHT = BUILDER
             .comment("Maximum Y difference to consider a node. Nodes beyond this vertical distance are ignored.")
-            .defineInRange("teleport.y_max_height", 6.0, 1.0, 256.0);
+            .defineInRange("teleport.y_max_height", 4.0, 1.0, 256.0);
 
     private static final ModConfigSpec.DoubleValue TELEPORT_Y_POSITIVE_WEIGHT = BUILDER
             .comment("Weight for Y difference when the node is above the player. Higher value makes nodes above harder to select.")
@@ -27,7 +27,7 @@ public class Config {
 
     private static final ModConfigSpec.DoubleValue TELEPORT_Y_NEGATIVE_WEIGHT = BUILDER
             .comment("Weight for Y difference when the node is below the player. Lower value makes nodes below easier to select.")
-            .defineInRange("teleport.y_negative_weight", 2.0, 0.1, 100.0);
+            .defineInRange("teleport.y_negative_weight", 3.0, 0.1, 100.0);
 
     private static final ModConfigSpec.DoubleValue DISTANCE_TO_SHOW_MARKS = BUILDER
             .comment("Distance to show marks")

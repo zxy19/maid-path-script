@@ -165,7 +165,6 @@ public class ClientMarkerRender {
         if (marker == null) return;
 
         renderPath(marker.pathIndicator, mills, mc, 0x99FFCC);
-        renderPath(marker.pathIndicatorLast, mills, mc, 0x99FFCC);
 
         for (BlockPos pos : marker.selectionPos) {
             renderPath(marker.lastUpdatedNode, pos, mills, mc, 0xFFFF99);

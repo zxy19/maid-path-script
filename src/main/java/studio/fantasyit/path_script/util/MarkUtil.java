@@ -20,7 +20,9 @@ import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class MarkUtil {
     public static void updatePathMarker(EntityMaid maid, LivingEntity owner, PathSet pathSet, BlockPos currentNode) {
@@ -34,28 +36,27 @@ public class MarkUtil {
         marker.currentShowingTip = Component.empty();
 
         Path path = maid.getNavigation().createPath(currentNode, 0);
-        List<BlockPos> newIndicator = new ArrayList<>();
-        Set<BlockPos> fullpath = new HashSet<>();
         if (path != null) {
             for (int i = 0; i < path.getNodeCount(); i++) {
-                fullpath.add(path.getNodePos(i));
-                if (marker.pathIndicator != null && marker.pathIndicator.contains(path.getNodePos(i))) {
-                    newIndicator.clear();
-                } else {
-                    newIndicator.add(path.getNodePos(i));
+                BlockPos nodePos = path.getNodePos(i);
+                if (i <= 5) {
+                    for (int j = 0; j < marker.pathIndicator.size() && j < 5; j++) {
+                        BlockPos prevPos = marker.pathIndicator.get(marker.pathIndicator.size() - j - 1);
+                        int dist = prevPos.distManhattan(nodePos);
+                        if (dist <= 1) {
+                            for (int ii = 0; ii < j; ii++)
+                                marker.pathIndicator.removeLast();
+                            if (dist == 0) {
+                                marker.pathIndicator.removeLast();
+                            }
+                        }
+                    }
                 }
+                marker.pathIndicator.add(nodePos);
             }
         }
-        List<BlockPos> lastIndicator = new ArrayList<>(marker.pathIndicatorLast);
-        if (lastIndicator.size() > 20)
-            lastIndicator = new ArrayList<>(lastIndicator.subList(lastIndicator.size() - 20, lastIndicator.size()));
-        for (BlockPos pos : marker.pathIndicator) {
-            lastIndicator.add(pos);
-            if (fullpath.contains(pos))
-                break;
-        }
-        marker.pathIndicatorLast = lastIndicator;
-        marker.pathIndicator = newIndicator;
+        if (marker.pathIndicator.size() > 30)
+            marker.pathIndicator = new ArrayList<>(marker.pathIndicator.subList(marker.pathIndicator.size() - 30, marker.pathIndicator.size()));
         player.setData(AttachmentRegistry.CLI_MARKER.get(), marker);
     }
 
