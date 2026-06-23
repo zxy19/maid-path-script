@@ -28,6 +28,12 @@ public class AttachmentRegistry {
                     .build()
     );
 
+    public static final Supplier<AttachmentType<Optional<UUID>>> PATH_GUIDE_MAID_FOR = ATTACHMENT_TYPES.register(
+            "path_guide_maid_for", () -> AttachmentType.builder(Optional::<UUID>empty)
+                    .serialize(UUIDUtil.CODEC.optionalFieldOf("path_guide_maid_for"))
+                    .build()
+    );
+
     public static void register(IEventBus modEventBus) {
         ATTACHMENT_TYPES.register(modEventBus);
     }

@@ -82,6 +82,7 @@ public class GuideSignItem extends Item {
             level.addFreshEntity(maid);
             level.getServer().schedule(new TickTask(1, () -> {
                 player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
+                maid.setData(AttachmentRegistry.PATH_GUIDE_MAID_FOR.get(), Optional.of(player.getUUID()));
                 BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
                 PathMarker data = player.getData(AttachmentRegistry.CLI_MARKER.get());
                 data.pathingMaidEntity = null;
