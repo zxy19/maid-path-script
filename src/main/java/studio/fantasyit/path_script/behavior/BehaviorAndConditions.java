@@ -2,7 +2,6 @@ package studio.fantasyit.path_script.behavior;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +25,8 @@ public class BehaviorAndConditions {
 
     public static boolean isOwnerAvailableForMove(EntityMaid maid, LivingEntity owner, BlockPos nextPos, PathSet pathSet) {
         if (pathSet.getNodes().isEmpty()) return false;
-        PathNode playerNearest = pathSet.getNearest(owner.blockPosition());
+        PathNode maidNearest = pathSet.getNearest(maid.blockPosition(),pathSet.getNode(nextPos));
+        PathNode playerNearest = pathSet.getNearest(owner.blockPosition(), pathSet.getNode(nextPos));
         if (playerNearest == null) return false;
         if (playerNearest.pos().equals(nextPos)) {
             return true;
@@ -35,7 +35,6 @@ public class BehaviorAndConditions {
         if (parents.contains(playerNearest.pos())) {
             return true;
         }
-        PathNode maidNearest = pathSet.getNearest(maid.blockPosition());
         Set<BlockPos> maidParents = pathSet.getParent(maidNearest.pos());
         if (maidParents.contains(playerNearest.pos())) {
             return true;
@@ -44,7 +43,7 @@ public class BehaviorAndConditions {
     }
 
     public static boolean isOwnerAheadOfMaid(EntityMaid maid, LivingEntity owner, BlockPos nextPos, PathSet pathSet) {
-        PathNode playerNearest = pathSet.getNearest(owner.blockPosition());
+        PathNode playerNearest = pathSet.getNearest(owner.blockPosition(), pathSet.getNode(nextPos));
         if (pathSet.isAncestor(nextPos, playerNearest.pos())) {
             return true;
         }

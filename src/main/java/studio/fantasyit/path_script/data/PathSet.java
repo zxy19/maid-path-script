@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.Nullable;
 import studio.fantasyit.path_script.Config;
 import studio.fantasyit.path_script.action.IAction;
 
@@ -65,6 +66,26 @@ public class PathSet {
             }
         }
         return false;
+    }
+
+    public int distanceOnPath(BlockPos pos1, BlockPos pos2) {
+        Map<BlockPos, Integer> visited = new HashMap<>();
+        Deque<BlockPos> stack = new ArrayDeque<>();
+        visited.put(pos1, 0);
+        stack.push(pos1);
+        while (!stack.isEmpty()) {
+            BlockPos current = stack.pop();
+            if (current.equals(pos2)) {
+                return visited.getOrDefault(current, 0);
+            }
+            for (BlockPos parent : getParent(current)) {
+                if (!visited.containsKey(parent)) {
+                    visited.put(parent, visited.getOrDefault(current, 0) + 1);
+                    stack.push(parent);
+                }
+            }
+        }
+        return -1;
     }
 
     public BlockPos getStartPos() {
@@ -127,6 +148,10 @@ public class PathSet {
     }
 
     public PathNode getNearest(BlockPos pos) {
+        return getNearest(pos, null);
+    }
+
+    public PathNode getNearest(BlockPos pos, @Nullable PathNode referenceNode) {
         PathNode nearest = null;
         double nearestDist = Double.MAX_VALUE;
         for (PathNode node : nodes) {
@@ -137,6 +162,15 @@ public class PathSet {
             double dx = node.pos().getX() - pos.getX();
             double dz = node.pos().getZ() - pos.getZ();
             double dist = dx * dx + dz * dz + (yWeight * dy) * (yWeight * dy);
+            if (referenceNode != null) {
+                int nr;
+                if (isAncestor(node.pos(), referenceNode.pos())) {
+                    nr = distanceOnPath(referenceNode.pos(), node.pos());
+                } else if (isAncestor(referenceNode.pos(), node.pos())) {
+                    nr = distanceOnPath(node.pos(), referenceNode.pos());
+                } else continue;
+                dist += nr * Config.nodeDistWeight;
+            }
             if (dist < nearestDist) {
                 nearestDist = dist;
                 nearest = node;
@@ -207,7 +241,6 @@ public class PathSet {
         }
         return new PathSet(newNodes);
     }
-
 
 
     @Override
