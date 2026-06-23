@@ -76,7 +76,7 @@ public class BehaviorAndConditions {
     }
 
 
-    public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player) {
+    public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player, boolean forceTp) {
         PathNode node = pathSet.getNearest(player.blockPosition());
         if (node == null || node.pos().distToCenterSqr(player.position()) > Config.clearDistance * Config.clearDistance)
             return;
@@ -85,16 +85,18 @@ public class BehaviorAndConditions {
         } else if (!maid.getOwnerReference().matches(player)) {
             return;
         }
-
-        player.sendSystemMessage(Component.translatable("item.path_script.path_editor.maid_set",
-                maid.getDisplayName(), node.pos().toShortString()));
         maid.setHomeModeEnable(true);
         maid.getTaskManager().setTask(new MaidPathScriptTask());
         MemoryUtil.setPathSet(maid, pathSet);
         MemoryUtil.setCurrentNode(maid, node.pos());
         Vec3 center = node.pos().getCenter();
         maid.invulnerableTime = 5;
-        maid.teleportTo(center.x, center.y - 0.5, center.z);
+        if (forceTp) {
+            maid.setPos(center.x, center.y - 0.5, center.z);
+            maid.setOldPosAndRot();
+        } else {
+            maid.teleportTo(center.x, center.y - 0.5, center.z);
+        }
         maid.fallDistance = 0;
         maid.setOnGround(true);
         maid.getNavigationManager().resetNavigation();
@@ -112,7 +114,7 @@ public class BehaviorAndConditions {
         MemoryUtil.setCurrentNode(maid, pos);
         maid.setHomeTo(pos, maid.getHomeRadius());
         maid.getSchedulePos().setWorkPos(pos);
-        BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, 0.5f, 1);
+        BehaviorUtils.setWalkAndLookTargetMemories(maid, pos, 0.5f, 0);
         MarkUtil.updatePathMarker(maid, owner, path, pos);
     }
 }

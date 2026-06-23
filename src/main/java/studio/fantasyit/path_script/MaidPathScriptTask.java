@@ -7,6 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 import studio.fantasyit.path_script.behavior.*;
 import studio.fantasyit.path_script.reg.ItemRegistry;
@@ -46,8 +47,14 @@ public class MaidPathScriptTask implements IMaidTask {
                 Pair.of(2, new MaidSwitchPathNode()),
                 Pair.of(2, new MaidWaitBeforeMultipleSelector()),
                 Pair.of(3, new MaidLeavePathModeBehavior()),
-                Pair.of(4, new MaidWaitOnPathEnd())
+                Pair.of(4, new MaidWaitOnPathEnd()),
+                Pair.of(5, new MaidWatchOwnerOnWaiting())
         ));
+    }
+
+    @Override
+    public AABB searchDimension(EntityMaid maid) {
+        return new AABB(maid.blockPosition()).inflate(64, VERTICAL_SEARCH_RANGE, 64);
     }
 
     @Override

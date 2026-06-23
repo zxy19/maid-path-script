@@ -123,7 +123,7 @@ public class PathEditorItem extends Item {
             player.sendSystemMessage(Component.translatable("item.path_script.path_editor.no_path"));
             return InteractionResult.FAIL;
         }
-        BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player);
+        BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player,false);
         return InteractionResult.SUCCESS;
     }
 

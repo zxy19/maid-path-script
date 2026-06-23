@@ -6,10 +6,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import studio.fantasyit.path_script.MaidPathScriptTask;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 
 @EventBusSubscriber
-public class MaidOwnerTickHandler {
+public class MaidTickHandler {
     @SubscribeEvent
     public static void onMaidTick(MaidTickEvent event) {
         EntityMaid maid = event.getMaid();
@@ -22,5 +23,8 @@ public class MaidOwnerTickHandler {
                 }
             }
         });
+        if (maid.getTask().getUid().equals(MaidPathScriptTask.ID) && !maid.hasHome()) {
+            maid.setHomeModeEnable(true);
+        }
     }
 }

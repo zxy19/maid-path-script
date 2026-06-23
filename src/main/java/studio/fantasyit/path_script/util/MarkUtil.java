@@ -46,7 +46,9 @@ public class MarkUtil {
                 }
             }
         }
-        List<BlockPos> lastIndicator = new ArrayList<>();
+        List<BlockPos> lastIndicator = new ArrayList<>(marker.pathIndicatorLast);
+        if (lastIndicator.size() > 20)
+            lastIndicator = new ArrayList<>(lastIndicator.subList(lastIndicator.size() - 20, lastIndicator.size()));
         for (BlockPos pos : marker.pathIndicator) {
             lastIndicator.add(pos);
             if (fullpath.contains(pos))
