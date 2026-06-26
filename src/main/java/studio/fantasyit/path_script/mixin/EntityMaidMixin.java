@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,15 +19,6 @@ public abstract class EntityMaidMixin extends TamableAnimal {
     }
 
     @Override
-    public boolean isInvisibleTo(Player player) {
-        EntityMaid self = (EntityMaid) (Object) this;
-        if (self.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
-            return player != self.getOwner();
-        }
-        return super.isInvisibleTo(player);
-    }
-
-    @Override
     public boolean isPushable() {
         EntityMaid self = (EntityMaid) (Object) this;
         if (self.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
@@ -37,13 +27,10 @@ public abstract class EntityMaidMixin extends TamableAnimal {
         return super.isPushable();
     }
 
-    @Override
-    protected void pushEntities() {
+    @WrapWithCondition(method = "pushEntities", at= @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/TamableAnimal;pushEntities()V"))
+    protected boolean pushEntities(TamableAnimal instance) {
         EntityMaid self = (EntityMaid) (Object) this;
-        if (self.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
-            return;
-        }
-        super.pushEntities();
+        return !self.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"));
     }
 
     @WrapWithCondition(
