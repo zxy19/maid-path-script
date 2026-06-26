@@ -41,6 +41,6 @@ public record MessageAction(String message) implements IAction {
 
     @Override
     public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
-        player.sendSystemMessage(Component.literal(message));
+        player.sendSystemMessage(Component.translatable("message.path_script.action_message",maid.getDisplayName(),message));
     }
 }

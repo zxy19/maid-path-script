@@ -1,8 +1,10 @@
 package studio.fantasyit.path_script.reg;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -30,6 +32,11 @@ public class DataComponentRegistry {
             = REGISTER.register("stored_maid", () -> DataComponentType.<CustomData>builder()
             .persistent(CustomData.CODEC)
             .networkSynchronized(CustomData.STREAM_CODEC)
+            .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> HAS_GENERATED_MAID
+            = REGISTER.register("has_generated_maid", () -> DataComponentType.<Boolean>builder()
+            .persistent(Codec.BOOL)
+            .networkSynchronized(ByteBufCodecs.BOOL)
             .build());
 
     public static void register(IEventBus eventBus) {

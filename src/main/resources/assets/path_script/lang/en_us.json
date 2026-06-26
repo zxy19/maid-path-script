@@ -41,5 +41,8 @@
   "item.path_script.guide_sign": "Guide Sign",
   "item.path_script.guide_sign.no_path": "No path data on this guide sign. Combine with a Path Editor on an anvil first.",
   "item.path_script.guide_sign.maid_created": "Guide maid created, starting at %s.",
-  "path.end": "Tourist Ends"
+  "path.end": "Tourist Ends",
+  "item.path_script.guide_sign.has_maid": "Has maid data",
+  "item.path_script.guide_sign.generated_maid": "Guide maid generated",
+  "message.path_script.action_message": "%s: %s"
 }

@@ -99,5 +99,11 @@ public class GuideSignItem extends Item {
         if (pathSet != null) {
             builder.accept(Component.translatable("item.path_script.path_editor.node_count", pathSet.getNodes().size()));
         }
+        if(stack.has(DataComponentRegistry.STORED_MAID.get())) {
+            builder.accept(Component.translatable("item.path_script.guide_sign.has_maid"));
+        }
+        if(stack.has(DataComponentRegistry.HAS_GENERATED_MAID.get())) {
+            builder.accept(Component.translatable("item.path_script.guide_sign.generated_maid"));
+        }
     }
 }

@@ -5,17 +5,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import studio.fantasyit.path_script.PathScript;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
+import studio.fantasyit.path_script.reg.DataComponentRegistry;
+import studio.fantasyit.path_script.reg.ItemRegistry;
 import studio.fantasyit.path_script.util.MarkUtil;
 import studio.fantasyit.path_script.util.MemoryUtil;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@EventBusSubscriber
 public class ServerTickHandler {
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Pre event) {
@@ -45,6 +50,18 @@ public class ServerTickHandler {
                     }
                 }
             });
+
+            ItemStack mainHandItem = player.getMainHandItem();
+            if (mainHandItem.is(ItemRegistry.GUIDE_SIGN)) {
+                boolean hasGeneratedStored = mainHandItem.has(DataComponentRegistry.HAS_GENERATED_MAID);
+                if (hasGeneratedStored != guideUuid.isPresent()) {
+                    if (guideUuid.isPresent()) {
+                        mainHandItem.set(DataComponentRegistry.HAS_GENERATED_MAID, true);
+                    } else {
+                        mainHandItem.remove(DataComponentRegistry.HAS_GENERATED_MAID);
+                    }
+                }
+            }
         }
     }
 }

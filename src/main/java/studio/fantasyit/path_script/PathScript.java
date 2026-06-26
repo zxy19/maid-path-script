@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.config.ModConfig;
 import studio.fantasyit.path_script.action.ActionManager;
-import studio.fantasyit.path_script.command.PathEditorCommand;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.CreativeTabRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
