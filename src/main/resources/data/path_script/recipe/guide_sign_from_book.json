@@ -1,0 +1,8 @@
+{
+  "type": "path_script:guide_sign_transfer",
+  "source": ["minecraft:written_book", "minecraft:writable_book"],
+  "result": {
+    "id": "path_script:guide_sign",
+    "count": 1
+  }
+}

@@ -44,5 +44,6 @@
   "path.end": "Tourist Ends",
   "item.path_script.guide_sign.has_maid": "Has maid data",
   "item.path_script.guide_sign.generated_maid": "Guide maid generated",
-  "message.path_script.action_message": "%s: %s"
+  "message.path_script.action_message": "%s: %s",
+  "message.path_script.maid_name_wrapper": "[%s]"
 }

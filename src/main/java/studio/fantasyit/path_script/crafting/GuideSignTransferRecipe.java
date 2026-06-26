@@ -5,10 +5,13 @@ import com.github.tartaricacid.touhoulittlemaid.item.ItemSmartSlab;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import studio.fantasyit.path_script.item.GuideSignItem;
@@ -76,6 +79,14 @@ public class GuideSignTransferRecipe implements CraftingRecipe {
         if (stack.getItem() instanceof ItemSmartSlab) {
             return stack.has(InitDataComponent.MAID_INFO.get());
         }
+        if (stack.has(DataComponents.WRITTEN_BOOK_CONTENT)) {
+            WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+            return content != null && !content.pages().isEmpty();
+        }
+        if (stack.has(DataComponents.WRITABLE_BOOK_CONTENT)) {
+            WritableBookContent content = stack.get(DataComponents.WRITABLE_BOOK_CONTENT);
+            return content != null && !content.pages().isEmpty();
+        }
         return false;
     }
 
@@ -106,6 +117,16 @@ public class GuideSignTransferRecipe implements CraftingRecipe {
             var maidInfo = sourceStack.get(InitDataComponent.MAID_INFO.get());
             if (maidInfo != null) {
                 resultStack.set(DataComponentRegistry.STORED_MAID.get(), maidInfo);
+            }
+        } else if (sourceStack.has(DataComponents.WRITTEN_BOOK_CONTENT)) {
+            WrittenBookContent content = sourceStack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+            if (content != null && !content.pages().isEmpty()) {
+                resultStack.set(DataComponentRegistry.WELCOME_MESSAGE.get(), content.pages().getFirst().raw().getString());
+            }
+        } else if (sourceStack.has(DataComponents.WRITABLE_BOOK_CONTENT)) {
+            WritableBookContent content = sourceStack.get(DataComponents.WRITABLE_BOOK_CONTENT);
+            if (content != null && !content.pages().isEmpty()) {
+                resultStack.set(DataComponentRegistry.WELCOME_MESSAGE.get(), content.pages().getFirst().raw());
             }
         }
 

@@ -39,6 +39,12 @@ public class DataComponentRegistry {
             .networkSynchronized(ByteBufCodecs.BOOL)
             .build());
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> WELCOME_MESSAGE
+            = REGISTER.register("welcome_message", () -> DataComponentType.<String>builder()
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+            .build());
+
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
     }

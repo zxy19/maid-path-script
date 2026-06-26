@@ -38,16 +38,6 @@ public class ServerTickHandler {
                 if (!maid.getTaskManager().getTask().getUid().equals(PathScript.id("path_navigate"))) {
                     maid.discard();
                     player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.empty());
-                    return;
-                }
-                Optional<PathSet> pathSet = MemoryUtil.getPathSet(maid);
-                Optional<BlockPos> currentNode = MemoryUtil.getCurrentNode(maid);
-                if (pathSet.isPresent() && currentNode.isPresent()) {
-                    var node = pathSet.get().getNode(currentNode.get());
-                    if (node != null && node.next().isEmpty() && maid.distanceToSqr(currentNode.get().getCenter()) < 4) {
-                        maid.discard();
-                        player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.empty());
-                    }
                 }
             });
 

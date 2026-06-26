@@ -12,6 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import studio.fantasyit.path_script.PathScript;
+import studio.fantasyit.path_script.util.MessageUtil;
 
 public record MessageAction(String message) implements IAction {
     public static Identifier ID = PathScript.id("message");
@@ -41,6 +42,6 @@ public record MessageAction(String message) implements IAction {
 
     @Override
     public void onSwitchTo(Player player, EntityMaid maid, BlockPos pos) {
-        player.sendSystemMessage(Component.translatable("message.path_script.action_message",maid.getDisplayName(),message));
+        player.sendSystemMessage(MessageUtil.getMaidSentChat(maid, Component.literal(message)));
     }
 }

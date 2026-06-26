@@ -2,6 +2,7 @@ package studio.fantasyit.path_script.behavior;
 
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +17,7 @@ import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.util.MarkUtil;
 import studio.fantasyit.path_script.util.MemoryUtil;
+import studio.fantasyit.path_script.util.MessageUtil;
 
 import java.util.Set;
 
@@ -25,7 +27,7 @@ public class BehaviorAndConditions {
 
     public static boolean isOwnerAvailableForMove(EntityMaid maid, LivingEntity owner, BlockPos nextPos, PathSet pathSet) {
         if (pathSet.getNodes().isEmpty()) return false;
-        PathNode maidNearest = pathSet.getNearest(maid.blockPosition(),pathSet.getNode(nextPos));
+        PathNode maidNearest = pathSet.getNearest(maid.blockPosition(), pathSet.getNode(nextPos));
         PathNode playerNearest = pathSet.getNearest(owner.blockPosition(), pathSet.getNode(nextPos));
         if (playerNearest == null) return false;
         if (playerNearest.pos().equals(nextPos)) {
@@ -75,7 +77,7 @@ public class BehaviorAndConditions {
     }
 
 
-    public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player, boolean forceTp) {
+    public static void setUpMaidForPath(EntityMaid maid, PathSet pathSet, Player player, boolean forceTp, @Nullable Component welcomeMessage) {
         PathNode node = pathSet.getNearest(player.blockPosition());
         if (node == null || node.pos().distToCenterSqr(player.position()) > Config.clearDistance * Config.clearDistance)
             return;
@@ -101,6 +103,9 @@ public class BehaviorAndConditions {
         maid.getNavigationManager().resetNavigation();
         maid.level().getServer().schedule(new TickTask(1, () ->
                 switchNodeTo(maid, node, pathSet)));
+        if (welcomeMessage != null) {
+            player.sendSystemMessage(MessageUtil.getMaidSentChat(maid, welcomeMessage));
+        }
     }
 
     public static void switchNodeTo(EntityMaid maid, PathNode node, PathSet path) {

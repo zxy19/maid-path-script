@@ -79,7 +79,9 @@ public class GuideSignItem extends Item {
             if (storedMaid != null) {
                 MaidCreatorUtil.loadMaid(maid, storedMaid, player);
             }
-            BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player, true);
+            String welcomeStr = stack.get(DataComponentRegistry.WELCOME_MESSAGE.get());
+            Component welcome = welcomeStr != null ? Component.literal(welcomeStr) : null;
+            BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player, true, welcome);
             level.addFreshEntity(maid);
             level.getServer().schedule(new TickTask(1, () -> {
                 player.setData(AttachmentRegistry.GUIDE_MAID.get(), Optional.of(maid.getUUID()));
@@ -95,13 +97,6 @@ public class GuideSignItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
-        PathSet pathSet = stack.get(DataComponentRegistry.PATH_SET.get());
-        if (pathSet != null) {
-            builder.accept(Component.translatable("item.path_script.path_editor.node_count", pathSet.getNodes().size()));
-        }
-        if(stack.has(DataComponentRegistry.STORED_MAID.get())) {
-            builder.accept(Component.translatable("item.path_script.guide_sign.has_maid"));
-        }
         if(stack.has(DataComponentRegistry.HAS_GENERATED_MAID.get())) {
             builder.accept(Component.translatable("item.path_script.guide_sign.generated_maid"));
         }
