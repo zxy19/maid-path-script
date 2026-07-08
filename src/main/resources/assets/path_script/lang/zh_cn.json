@@ -29,6 +29,7 @@
   "item.path_script.path_editor.cannot_connect_self": "不能连接自身。",
   "item.path_script.path_editor.would_create_cycle": "此连接会产生环路，已阻止。",
   "item.path_script.path_editor.edge_connected": "已连接 %s -> %s。",
+  "item.path_script.path_editor.edge_removed": "已删除 %s -x-> %s.",
   "task.path_script.path_navigate": "路径导航",
   "path.wait_before": "接下来该往哪走呢？",
   "action.path_script.beacon": "§a[B] §f#%08X",
@@ -44,5 +45,6 @@
   "path.end": "游览结束",
   "item.path_script.guide_sign.has_maid": "包含女仆数据",
   "item.path_script.guide_sign.generated_maid": "已生成导游女仆",
-  "message.path_script.action_message": "%s: %s"
+  "message.path_script.action_message": "%s: %s",
+  "message.path_script.maid_name_wrapper": "[%s]"
 }

@@ -121,6 +121,33 @@ public class PathSet {
         return new PathSet(newNodes);
     }
 
+    public boolean hasEdge(BlockPos from, BlockPos to) {
+        if (!map.containsKey(from) || !map.containsKey(to)) {
+            return false;
+        }
+        PathNode fromNode = map.get(from);
+        return fromNode.next().contains(to);
+    }
+
+    public PathSet removeEdge(BlockPos from, BlockPos to) {
+        if (!map.containsKey(from) || !map.containsKey(to)) {
+            return this;
+        }
+        PathNode fromNode = map.get(from);
+        if (!fromNode.next().contains(to)) {
+            return this;
+        }
+        List<PathNode> newNodes = new ArrayList<>();
+        for (PathNode node : nodes) {
+            if (node.pos().equals(from)) {
+                newNodes.add(new PathNode(node.pos(), new ArrayList<>(node.next().stream().filter(t -> !t.equals(to)).toList()), node.actions()));
+            } else {
+                newNodes.add(node);
+            }
+        }
+        return new PathSet(newNodes);
+    }
+
     public PathSet addEdge(BlockPos from, BlockPos to) {
         if (!map.containsKey(from) || !map.containsKey(to)) {
             return this;

@@ -29,6 +29,7 @@
   "item.path_script.path_editor.cannot_connect_self": "Cannot connect a node to itself.",
   "item.path_script.path_editor.would_create_cycle": "This connection would create a cycle. Blocked.",
   "item.path_script.path_editor.edge_connected": "Connected %s -> %s.",
+  "item.path_script.path_editor.edge_removed": "Removed %s -x-> %s.",
   "task.path_script.path_navigate": "Path Navigate",
   "path.wait_before": "Which way shall we go then?",
   "action.path_script.beacon": "[B] #%08X",

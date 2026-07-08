@@ -67,13 +67,21 @@ public class PathEditorItem extends Item {
                 player.sendSystemMessage(Component.translatable("item.path_script.path_editor.would_create_cycle"));
                 return InteractionResult.FAIL;
             }
-            pathSet = pathSet.addEdge(currentPos, targetPos);
+            if (pathSet.hasEdge(currentPos, targetPos)) {
+                pathSet = pathSet.removeEdge(currentPos, targetPos);
+                player.sendSystemMessage(
+                        Component.translatable("item.path_script.path_editor.edge_removed",
+                                currentPos.toShortString(), targetPos.toShortString())
+                );
+            } else {
+                pathSet = pathSet.addEdge(currentPos, targetPos);
+                player.sendSystemMessage(
+                        Component.translatable("item.path_script.path_editor.edge_connected",
+                                currentPos.toShortString(), targetPos.toShortString())
+                );
+            }
             stack.set(DataComponentRegistry.PATH_SET.get(), pathSet);
             stack.set(DataComponentRegistry.CURRENT_POS.get(), targetPos);
-            player.sendSystemMessage(
-                    Component.translatable("item.path_script.path_editor.edge_connected",
-                            currentPos.toShortString(), targetPos.toShortString())
-            );
             return InteractionResult.SUCCESS;
         }
 
