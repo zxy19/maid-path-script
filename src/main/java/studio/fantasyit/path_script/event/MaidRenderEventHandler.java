@@ -26,6 +26,11 @@ public class MaidRenderEventHandler {
                 LivingEntity owner = maid.getOwner();
                 if (owner != null) {
                     state.setRenderData(INVISIBLE_OWNER, owner.getUUID());
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc.player != null && !mc.player.getUUID().equals(owner.getUUID())) {
+                        state.shadowRadius = 0;
+                        state.showBubble = false;
+                    }
                 }
             }
         });
