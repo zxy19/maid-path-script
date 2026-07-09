@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,10 +19,13 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import studio.fantasyit.path_script.behavior.BehaviorAndConditions;
+import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
 import studio.fantasyit.path_script.network.NetworkHandler;
+import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.DataComponentRegistry;
+import studio.fantasyit.path_script.util.MarkUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -132,6 +136,12 @@ public class PathEditorItem extends Item {
             return InteractionResult.FAIL;
         }
         BehaviorAndConditions.setUpMaidForPath(maid, pathSet, player, false, null);
+        level.getServer().schedule(new TickTask(1, () -> {
+            PathMarker data = player.getData(AttachmentRegistry.CLI_MARKER.get());
+            data.pathingMaidEntity = null;
+            MarkUtil.setupMarkerFor(data, maid.getUUID(), pathSet);
+            player.setData(AttachmentRegistry.CLI_MARKER, data);
+        }));
         return InteractionResult.SUCCESS;
     }
 

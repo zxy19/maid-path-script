@@ -215,9 +215,6 @@ public class PathSet {
         if (!map.containsKey(pos)) {
             return this;
         }
-        if (getParent(pos).isEmpty()) {
-            return this;
-        }
         List<PathNode> newNodes = new ArrayList<>();
         for (PathNode node : nodes) {
             if (node.pos().equals(pos)) {

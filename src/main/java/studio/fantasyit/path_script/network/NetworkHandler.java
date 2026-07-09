@@ -44,7 +44,6 @@ public class NetworkHandler {
                     if (pathSet == null || !pathSet.contains(pos)) return;
 
                     if (payload.deleteNode()) {
-                        if (pos.equals(pathSet.getStartPos())) return;
                         PathSet newPathSet = pathSet.removeNode(pos);
                         if (newPathSet == null) {
                             stack.remove(DataComponentRegistry.PATH_SET.get());
