@@ -28,7 +28,7 @@ public class BehaviorAndConditions {
         if (pathSet.getNodes().isEmpty()) return false;
         PathNode maidNearest = pathSet.getNearest(maid.blockPosition(), pathSet.getNode(nextPos));
         PathNode playerNearest = pathSet.getNearest(owner.blockPosition(), pathSet.getNode(nextPos));
-        if (playerNearest == null) return false;
+        if (playerNearest == null || maidNearest == null) return false;
         if (playerNearest.pos().equals(nextPos)) {
             return true;
         }
@@ -45,6 +45,7 @@ public class BehaviorAndConditions {
 
     public static boolean isOwnerAheadOfMaid(EntityMaid maid, LivingEntity owner, BlockPos nextPos, PathSet pathSet) {
         PathNode playerNearest = pathSet.getNearest(owner.blockPosition(), pathSet.getNode(nextPos));
+        if (playerNearest == null) return false;
         if (pathSet.isAncestor(nextPos, playerNearest.pos())) {
             return true;
         }
@@ -62,6 +63,7 @@ public class BehaviorAndConditions {
         if (node.next().isEmpty()) return null;
         if (node.next().size() == 1) return node.next().getFirst();
         PathNode playerNearest = pathSet.getNearest(owner.blockPosition());
+        if (playerNearest == null) return null;
         for (BlockPos nxt : node.next()) {
             if (playerNearest.pos().equals(nxt) || pathSet.isAncestor(nxt, playerNearest.pos())) {
                 return nxt;

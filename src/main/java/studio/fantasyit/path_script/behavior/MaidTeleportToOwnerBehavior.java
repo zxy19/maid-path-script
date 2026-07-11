@@ -3,18 +3,16 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import studio.fantasyit.path_script.Config;
-import studio.fantasyit.path_script.data.PathMarker;
 import studio.fantasyit.path_script.data.PathNode;
 import studio.fantasyit.path_script.data.PathSet;
-import studio.fantasyit.path_script.util.MarkUtil;
-import studio.fantasyit.path_script.util.MemoryUtil;
 import studio.fantasyit.path_script.reg.AttachmentRegistry;
 import studio.fantasyit.path_script.reg.MemoryModuleRegistry;
+import studio.fantasyit.path_script.util.MarkUtil;
+import studio.fantasyit.path_script.util.MemoryUtil;
 
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +50,7 @@ public class MaidTeleportToOwnerBehavior extends Behavior<EntityMaid> {
         if (path.isEmpty()) return;
 
         PathNode nearest = path.get().getNearest(owner.blockPosition());
+        if (nearest == null) return;
         double clearDist = Config.clearDistance;
         if (nearest.pos().distSqr(owner.blockPosition()) > clearDist * clearDist) {
             MarkUtil.clearMarker(owner);

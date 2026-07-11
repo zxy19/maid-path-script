@@ -16,6 +16,7 @@ import java.util.*;
 public class PathMarker {
     public @Nullable UUID pathingMaidEntity;
     public BlockPos lastUpdatedNode = BlockPos.ZERO;
+    public List<BlockPos> historyNodes = new ArrayList<>();
     public List<BlockPos> pathIndicator = new ArrayList<>();
 
     public Component currentShowingTip = Component.empty();
@@ -39,6 +40,8 @@ public class PathMarker {
     public static final StreamCodec<RegistryFriendlyByteBuf, PathMarker> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             m -> m.lastUpdatedNode,
+            BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            m -> m.historyNodes,
             UUIDUtil.STREAM_CODEC.apply(ByteBufCodecs::optional),
             m -> Optional.ofNullable(m.pathingMaidEntity),
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
@@ -53,9 +56,10 @@ public class PathMarker {
             m -> m.selectionPos,
             BeamRenderData.STREAM_CODEC.apply(ByteBufCodecs.list()),
             m -> m.beams,
-            (lastUpdated, uuid, blocks, component, tips, icons, selection, beams) -> {
+            (lastUpdated, history, uuid, blocks, component, tips, icons, selection, beams) -> {
                 var pm = new PathMarker();
                 pm.lastUpdatedNode = lastUpdated;
+                pm.historyNodes = history;
                 pm.pathingMaidEntity = uuid.orElse(null);
                 pm.pathIndicator = blocks;
                 pm.tip = tips;
@@ -70,6 +74,8 @@ public class PathMarker {
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.lastUpdatedNode);
+        hash = 53 * hash + Objects.hashCode(this.historyNodes);
         hash = 97 * hash + Objects.hashCode(this.pathingMaidEntity);
         hash = 97 * hash + Objects.hashCode(this.pathIndicator);
         hash = 97 * hash + Objects.hashCode(this.tip);
@@ -85,6 +91,8 @@ public class PathMarker {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         PathMarker other = (PathMarker) obj;
+        if (!Objects.equals(this.lastUpdatedNode, other.lastUpdatedNode)) return false;
+        if (!Objects.equals(this.historyNodes, other.historyNodes)) return false;
         if (!Objects.equals(this.pathingMaidEntity, other.pathingMaidEntity)) return false;
         if (!Objects.equals(this.pathIndicator, other.pathIndicator)) return false;
         if (!Objects.equals(this.currentShowingTip, other.currentShowingTip)) return false;

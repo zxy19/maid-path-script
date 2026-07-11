@@ -174,11 +174,11 @@ public class PathSet {
         return node == null ? Collections.emptyList() : node.next();
     }
 
-    public PathNode getNearest(BlockPos pos) {
+    public @Nullable PathNode getNearest(BlockPos pos) {
         return getNearest(pos, null);
     }
 
-    public PathNode getNearest(BlockPos pos, @Nullable PathNode referenceNode) {
+    public @Nullable PathNode getNearest(BlockPos pos, @Nullable PathNode referenceNode) {
         PathNode nearest = null;
         double nearestDist = Double.MAX_VALUE;
         for (PathNode node : nodes) {

@@ -31,6 +31,7 @@ public class MarkUtil {
         PathMarker marker = player.getData(AttachmentRegistry.CLI_MARKER.get());
         MarkUtil.setupMarkerFor(marker, maid.getUUID(), pathSet);
         marker.pathingMaidEntity = maid.getUUID();
+        marker.historyNodes.add(currentNode);
         marker.lastUpdatedNode = currentNode;
         marker.selectionPos.clear();
         marker.currentShowingTip = Component.empty();
@@ -67,6 +68,7 @@ public class MarkUtil {
             data.currentShowingTip = Component.empty();
             data.pathIndicator.clear();
             data.selectionPos.clear();
+            data.historyNodes.clear();
         }
     }
 
