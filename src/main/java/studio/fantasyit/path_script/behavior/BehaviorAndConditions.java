@@ -3,7 +3,6 @@ package studio.fantasyit.path_script.behavior;
 import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -101,11 +100,10 @@ public class BehaviorAndConditions {
         maid.fallDistance = 0;
         maid.setOnGround(true);
         maid.getNavigationManager().resetNavigation();
-        maid.level().getServer().schedule(new TickTask(1, () ->
-                switchNodeTo(maid, node, pathSet)));
         if (welcomeMessage != null) {
             player.sendSystemMessage(MessageUtil.getMaidSentChat(maid, welcomeMessage));
         }
+        switchNodeTo(maid, node, pathSet);
     }
 
     public static void switchNodeTo(EntityMaid maid, PathNode node, PathSet path) {

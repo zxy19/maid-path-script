@@ -189,7 +189,7 @@ public class ClientMarkerRender {
         double start = (double) ((mills / 100) % 10) * 0.1;
         for (double a = start; a < distance; a += 1) {
             Vec3 p1 = c1.add(delta.normalize().scale(a));
-            mc.level.addParticle(new DustParticleOptions(color, 0.6f), p1.x, p1.y, p1.z, 0.0D, 0.0D, 0.0D);
+            mc.level.addParticle(new DustParticleOptions(color, 0.4f), p1.x, p1.y, p1.z, 0.0D, 0.0D, 0.0D);
         }
     }
 }
