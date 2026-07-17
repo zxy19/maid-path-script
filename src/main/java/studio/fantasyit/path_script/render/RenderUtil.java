@@ -19,7 +19,7 @@ import studio.fantasyit.path_script.PathScript;
 public class RenderUtil {
     private static final Identifier WAY_ARROW_TEXTURE = Identifier.fromNamespaceAndPath(PathScript.MODID, "textures/particle/way.png");
     private static final RenderType WAY_ARROW_RENDER_TYPE = RenderTypes.entityCutoutCull(WAY_ARROW_TEXTURE);
-    public static void renderWaypointArrowsForEdge(BlockPos from, BlockPos to, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera,int color) {
+    public static void renderWaypointArrowsForEdge(BlockPos from, BlockPos to, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera, int color) {
         Vec3 c1 = from.getCenter();
         Vec3 c2 = to.getCenter();
         Vec3 delta = c2.subtract(c1);
@@ -35,20 +35,46 @@ public class RenderUtil {
         Vector3f screenDir = worldDir.rotate(invCam);
         float angle = -(float) Math.toDegrees(Math.atan2(screenDir.x, screenDir.y));
 
-        for (double a = start; a < distance; a += 0.2) {
-            Vec3 pos = c1.add(dir.scale(a));
-            poseStack.pushPose();
-            poseStack.translate(pos.x - camera.pos.x, pos.y - camera.pos.y, pos.z - camera.pos.z);
-            poseStack.mulPose(camera.orientation);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(angle));
-            poseStack.scale(0.15f, 0.15f, 0.15f);
-            collector.submitCustomGeometry(poseStack, WAY_ARROW_RENDER_TYPE, (pose, buffer) -> {
-                buffer.addVertex(pose, -0.5f, -0.5f, 0).setColor(color).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
-                buffer.addVertex(pose, 0.5f, -0.5f, 0).setColor(color).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
-                buffer.addVertex(pose, 0.5f, 0.5f, 0).setColor(color).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
-                buffer.addVertex(pose, -0.5f, 0.5f, 0).setColor(color).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
-            });
-            poseStack.popPose();
-        }
+        Quaternionf combinedRot = new Quaternionf(camera.orientation)
+                .mul(Axis.ZP.rotationDegrees(angle));
+        float s = 0.15f;
+
+        Vector3f[] localVerts = {
+                new Vector3f(-0.5f * s, -0.5f * s, 0).rotate(combinedRot),
+                new Vector3f(0.5f * s, -0.5f * s, 0).rotate(combinedRot),
+                new Vector3f(0.5f * s, 0.5f * s, 0).rotate(combinedRot),
+                new Vector3f(-0.5f * s, 0.5f * s, 0).rotate(combinedRot),
+        };
+
+        Vec3 camPos = camera.pos;
+        double stepX = dir.x * 0.2;
+        double stepY = dir.y * 0.2;
+        double stepZ = dir.z * 0.2;
+
+        poseStack.pushPose();
+        collector.submitCustomGeometry(poseStack, WAY_ARROW_RENDER_TYPE, (pose, buffer) -> {
+            double ax = c1.x + dir.x * start;
+            double ay = c1.y + dir.y * start;
+            double az = c1.z + dir.z * start;
+            for (double a = start; a < distance - 0.001; a += 0.2) {
+                double ox = ax - camPos.x;
+                double oy = ay - camPos.y;
+                double oz = az - camPos.z;
+
+                buffer.addVertex(pose, (float) (ox + localVerts[0].x()), (float) (oy + localVerts[0].y()), (float) (oz + localVerts[0].z()))
+                        .setColor(color).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
+                buffer.addVertex(pose, (float) (ox + localVerts[1].x()), (float) (oy + localVerts[1].y()), (float) (oz + localVerts[1].z()))
+                        .setColor(color).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
+                buffer.addVertex(pose, (float) (ox + localVerts[2].x()), (float) (oy + localVerts[2].y()), (float) (oz + localVerts[2].z()))
+                        .setColor(color).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
+                buffer.addVertex(pose, (float) (ox + localVerts[3].x()), (float) (oy + localVerts[3].y()), (float) (oz + localVerts[3].z()))
+                        .setColor(color).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0, 1, 0);
+
+                ax += stepX;
+                ay += stepY;
+                az += stepZ;
+            }
+        });
+        poseStack.popPose();
     }
 }
